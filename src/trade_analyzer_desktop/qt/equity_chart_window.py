@@ -37,10 +37,10 @@ class EquityChartWindow(QWidget):
         self.__short_side_button.setCheckable(True)
         self.__short_side_button.clicked.connect(self.on_short_side_button_clicked)
 
-        self.side_button_group: QButtonGroup = QButtonGroup()
-        self.side_button_group.addButton(self.__all_side_button, 1)
-        self.side_button_group.addButton(self.__long_side_button, 2)
-        self.side_button_group.addButton(self.__short_side_button, 3)
+        self.__side_button_group: QButtonGroup = QButtonGroup()
+        self.__side_button_group.addButton(self.__all_side_button, 1)
+        self.__side_button_group.addButton(self.__long_side_button, 2)
+        self.__side_button_group.addButton(self.__short_side_button, 3)
 
         self.__by_time_button: QRadioButton = QRadioButton("By Time")
         self.__by_time_button.setChecked(True)

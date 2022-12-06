@@ -1,9 +1,12 @@
 from typing import Optional, Union
 
-from PyQt6.QtWidgets import QWidget, QGridLayout, QLabel
+from PyQt6.QtWidgets import QWidget, QGridLayout, QPushButton, QButtonGroup, QLabel, QComboBox
 
+from .charts import DisplayUnits
+from .statistics_view import StatisticsView
 from .statistics_table import StatisticsTable
 from ..analysis import AnalysisResults, StatisticsResults
+
 
 class OverviewWindow(QWidget):
     
@@ -12,15 +15,51 @@ class OverviewWindow(QWidget):
         self.setWindowTitle("Overview")
 
         # Widgets
+        self.__all_side_button: QPushButton = QPushButton("All")
+        self.__all_side_button.setAutoExclusive(True)
+        self.__all_side_button.setCheckable(True)
+        self.__all_side_button.setChecked(True)
+        self.__all_side_button.clicked.connect(self.on_all_side_button_clicked)
 
+        self.__long_side_button: QPushButton = QPushButton("Long")
+        self.__long_side_button.setAutoExclusive(True)
+        self.__long_side_button.setCheckable(True)
+        self.__long_side_button.clicked.connect(self.on_long_side_button_clicked)
 
+        self.__short_side_button: QPushButton = QPushButton("Short")
+        self.__short_side_button.setAutoExclusive(True)
+        self.__short_side_button.setCheckable(True)
+        self.__short_side_button.clicked.connect(self.on_short_side_button_clicked)
+        
+        self.side_button_group: QButtonGroup = QButtonGroup()
+        self.side_button_group.addButton(self.__all_side_button, 1)
+        self.side_button_group.addButton(self.__long_side_button, 2)
+        self.side_button_group.addButton(self.__short_side_button, 3)
+
+        self.__display_units_combo: QComboBox = QComboBox()
+        self.__display_units_combo.currentIndexChanged.connect(self.on_display_units_combo_currenct_index_changed)
+
+        self.__statistics_view: StatisticsView = StatisticsView()
         self.__statistics_table: StatisticsTable = StatisticsTable()
+        
         # Layout 
         layout: QGridLayout = QGridLayout(self)
+        layout.addWidget(QLabel("Side"), 0, 0, 1, 1)
+        layout.addWidget(self.__all_side_button, 0, 1, 1, 1)
+        layout.addWidget(self.__long_side_button, 0, 2, 1, 1)
+        layout.addWidget(self.__short_side_button, 0, 3, 1, 1)
 
-        layout.addWidget(self.__statistics_table)
+        layout.addWidget(QLabel("Display Units"), 0, 4, 1, 1)
+        layout.addWidget(self.__display_units_combo, 0, 5, 1, 1)
+        
+        layout.addWidget(self.__statistics_view, 1, 0, 7, 10)
+        layout.addWidget(self.__statistics_table, 8, 0, 2, 10)
 
         # Default Data
+
+        for i, units in enumerate(DisplayUnits):
+            self.__display_units_combo.addItem(units.value, units)    
+
         for key in results.keys:
             if not key.startswith("Benchmark"):
                 statistics_results: Union[StatisticsResults, None] = results.get(key)
@@ -30,7 +69,18 @@ class OverviewWindow(QWidget):
     # -------------------------------------------------- Properties --------------------------------------------------
 
     # -------------------------------------------------- Event Handlers --------------------------------------------------
+    def on_all_side_button_clicked(self, checked: bool) -> None:
+        pass
+    
+    def on_long_side_button_clicked(self, checked: bool) -> None:
+        pass
+    
+    def on_short_side_button_clicked(self, checked: bool) -> None:
+        pass
 
+    def on_display_units_combo_currenct_index_changed(self, index: int) -> None:
+        pass
+            
     # -------------------------------------------------- Public Methods --------------------------------------------------
 
 
