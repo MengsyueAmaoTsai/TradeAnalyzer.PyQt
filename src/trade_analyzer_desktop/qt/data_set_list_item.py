@@ -108,6 +108,9 @@ class DataSetListItem(QWidget):
 
         statistics: Optional[Union[TradeStatistics, DailyStatistics]] = None
 
+        if not total_performance:
+            return []
+
         if x_axis_type == AxisType.DateTime:
             statistics = total_performance.daily_statistics
         else:
