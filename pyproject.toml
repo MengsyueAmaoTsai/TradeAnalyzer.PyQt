@@ -1,0 +1,25 @@
+[tool.pdm]
+
+[project]
+name = "trade-analyzer-desktop"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Mengsyue Amao Tsai", email = "mengsyue.tsai@outlook.com"},
+]
+dependencies = [
+    "pyqt6>=6.4.0",
+    "pyqt6-charts>=6.4.0",
+    "yfinance>=0.1.87",
+    "qdarkstyle>=3.1",
+]
+requires-python = ">=3.9"
+readme = "README.md"
+license = {text = "None"}
+
+[build-system]
+requires = ["pdm-pep517>=1.0"]
+build-backend = "pdm.pep517.api"
+
+[tool.pdm.scripts]
+start = "python launcher.py"
