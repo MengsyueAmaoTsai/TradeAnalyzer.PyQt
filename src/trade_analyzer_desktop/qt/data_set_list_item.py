@@ -38,8 +38,8 @@ class DataSetListItem(QWidget):
     
     @is_checked.setter
     def is_checked(self, is_checked: bool) -> None:
-        self.__is_checked = is_checked
         self.__check_box.setChecked(is_checked)
+        self.__is_checked = is_checked
 
     @property
     def key(self) -> str:

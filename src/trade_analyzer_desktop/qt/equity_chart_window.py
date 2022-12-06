@@ -159,11 +159,11 @@ class EquityChartWindow(QWidget):
         """
         Add a series to equity/drawdown chart.
         """
-        equity_chart_points: List[ChartPoint] = self.__data_set_list.get_data_set_item(name).get_equity_chart_points(self.side, self.x_axis_type, self.display_units)
-        drawdown_chart_points: List[ChartPoint] = self.__data_set_list.get_data_set_item(name).get_drawdown_chart_points(self.side, self.x_axis_type, self.display_units)
+        equity_chart_points: List[ChartPoint] = self.__data_set_list.get_item(name).get_equity_chart_points(self.side, self.x_axis_type, self.display_units)
+        drawdown_chart_points: List[ChartPoint] = self.__data_set_list.get_item(name).get_drawdown_chart_points(self.side, self.x_axis_type, self.display_units)
         
         if name.startswith("Benchmark") and self.x_axis_type == AxisType.Value:
-            benchmark_item: DataSetListItem = self.__data_set_list.get_data_set_item(name)
+            benchmark_item: DataSetListItem = self.__data_set_list.get_item(name)
             self.remove_series(name)
             benchmark_item.is_checked = False
         else:

@@ -18,11 +18,26 @@ class DataSetList(QListWidget):
     # -------------------------------------------------- Properties --------------------------------------------------
     @property
     def items(self) -> List[DataSetListItem]:
+        """
+        Returns all items in list.
+        """
         return self.__data_set_list_items
     
+    @property
+    def checked_items(self) -> List[DataSetListItem]:
+        """
+        Returns current checked items
+        """
+        return list(filter(lambda item: item.is_checked and not item.is_benchmark, self.items))
+
     # -------------------------------------------------- Event Handlers --------------------------------------------------
     def on_data_set_item_checked(self, key: str, checked: bool) -> None:
-        self.item_checked.emit(key, checked)
+
+        if len(self.checked_items) == 0:
+            self.get_item(key).is_checked = True
+
+        elif key.startswith("Benchmark") or len(self.checked_items) > 0:
+            self.item_checked.emit(key, checked)
 
     # -------------------------------------------------- Public Methods --------------------------------------------------
     def add_data(self, key: str, statistics_results: StatisticsResults) -> None:
@@ -39,7 +54,7 @@ class DataSetList(QListWidget):
         self.setItemWidget(list_item, list_item_widget)   
         self.__data_set_list_items.append(list_item_widget)
 
-    def get_data_set_item(self, key: str) -> DataSetListItem:
+    def get_item(self, key: str) -> DataSetListItem:
         """
         Get data set item by key.
         """
