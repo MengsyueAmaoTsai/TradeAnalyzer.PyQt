@@ -57,6 +57,10 @@ class DataSetListItem(QWidget):
     @statistics_results.setter
     def statistics_results(self, statistics_results: StatisticsResults) -> None:
         self.__statistics_results = statistics_results
+
+    @property
+    def is_benchmark(self) -> bool:
+        return self.key.startswith("Benchmark")
         
     # -------------------------------------------------- Event Handlers --------------------------------------------------
     def on_check_box_clicked(self, checked: bool) -> None:
