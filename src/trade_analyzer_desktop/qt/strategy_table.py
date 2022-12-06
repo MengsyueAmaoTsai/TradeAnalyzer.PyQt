@@ -181,7 +181,7 @@ class StrategyTable(QTableWidget):
         self.__setting_dialog.exec()
 
     def on_analysis_setting_confirmed(self, starting_capital: float, start_date: Date, end_date: Date, benchmark_sybol: BenchmarkSymbol) -> None:
-        results: AnalysisResults = Analyzer.run_analysis(self.selected_strategies, starting_capital, start_date, end_date, benchmark_sybol)
+        results: AnalysisResults = Analyzer.analyze_strategies(self.selected_strategies, starting_capital, start_date, end_date, benchmark_sybol)
 
         self.__analysis_window: AnalysisWindow = AnalysisWindow(results)
         self.__analysis_window.showMaximized()        
