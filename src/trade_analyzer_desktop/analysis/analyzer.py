@@ -1,5 +1,6 @@
 from typing import List, Union, Dict, overload, Any
 from datetime import date as Date 
+import copy
 
 from ..entities import Order, Instrument, Strategy as StrategyModel, BacktestReport, Trade
 from ..trading.strategies import Strategy
@@ -84,8 +85,12 @@ class Analyzer:
             orders: List[Order] = list(filter(
                 lambda order: order.datetime.date() >= start_date and order.datetime.date() <= end_date, OrderRepository.query_by_strategy_id(strategy.id))
             )
-            
+
             cls.__mock_matching(strategy, instruments, orders)
+
+            if len(strategies) > 1:
+                for trade in strategy.closed_trades:
+                    portfolio_trades.append(copy.deepcopy(trade))
 
             # Get trading results of strategy instance.
             key: str = f"Strategy:{strategy_id}"
@@ -96,17 +101,17 @@ class Analyzer:
                 start_date,
                 end_date                
             ))
-
-            if len(strategies) > 1:
-                portfolio_trades.extend(strategy.closed_trades)
         
-        if len(strategies):
+        if len(strategies) > 1:
             # Re-assign trade id for portfolio strategy.
-            for i in range(len(portfolio_trades)):
-                portfolio_trades[i].id = i + 1
+            # sorted_trades: List[Trade] = sorted(portfolio_trades, key = lambda trade: trade.exit_time.timestamp())
+            
+            sorted_trades: List[Trade] = sorted(portfolio_trades, key = lambda trade: trade.exit_time)
+            for i in range(len(sorted_trades)):
+                sorted_trades[i].id = i + 1
 
             results.add("All", StatisticsBuilder.build_strategy(
-                portfolio_trades, 
+                sorted_trades, 
                 benchmark_results.total_performance.daily_statistics.returns,
                 starting_capital,
                 start_date,

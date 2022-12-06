@@ -126,15 +126,6 @@ class BacktestReportTable(QTableWidget):
         self.__setting_dialog.exec()
 
     def on_analysis_setting_confirmed(self, starting_capital: float, start_date: Date, end_date: Date, benchmark_sybol: BenchmarkSymbol) -> None:
-        # strategies: List[Strategy] = []
-
-        # for report in self.selected_backtest_reports:
-        #     strategy: Union[Strategy, None] = StrategyRepository.query_by_id(report.strategy_id)
-        #     assert(strategy is not None)
-        #     strategy.default_report_id = report.id
-        #     strategies.append(strategy)
-
-        # results: AnalysisResults = Analyzer.run_analysis(strategies, starting_capital, start_date, end_date, benchmark_sybol)
         results: AnalysisResults = Analyzer.analyze_reports(self.selected_backtest_reports, starting_capital, start_date, end_date, benchmark_sybol)
         self.__analysis_window: AnalysisWindow = AnalysisWindow(results)
         self.__analysis_window.showMaximized()     

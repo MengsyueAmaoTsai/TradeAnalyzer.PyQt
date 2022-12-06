@@ -32,7 +32,6 @@ class TradeStatisticsBuilder:
         for trade in trades:
             net_profit_loss[trade.id] = trade.net_profit_loss
             returns[trade.id] = trade.net_profit_loss / equity[trade.id - 1]
-
             current_equity: float = equity[trade.id - 1] + trade.net_profit_loss 
             equity[trade.id] = current_equity
             cumulative_returns[trade.id] = current_equity / starting_capital - 1
