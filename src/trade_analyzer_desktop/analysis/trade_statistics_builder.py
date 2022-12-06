@@ -53,15 +53,15 @@ class TradeStatisticsBuilder:
 
             trade_statistics.total_number_of_trades += 1
 
-            if (trade_statistics.total_profit_loss + trade.mfe > max_total_profit_loss_with_mfe):
-                max_total_profit_loss_with_mfe = trade_statistics.total_profit_loss + trade.mfe
+            if (trade_statistics.total_net_profit + trade.mfe > max_total_profit_loss_with_mfe):
+                max_total_profit_loss_with_mfe = trade_statistics.total_net_profit + trade.mfe
 
-            if (trade_statistics.total_profit_loss + trade.mae - max_total_profit_loss_with_mfe < trade_statistics.max_intra_trade_drawdown):
-                trade_statistics.max_intra_trade_drawdown = trade_statistics.total_profit_loss + trade.mae - max_total_profit_loss_with_mfe
+            if (trade_statistics.total_net_profit + trade.mae - max_total_profit_loss_with_mfe < trade_statistics.max_intra_trade_drawdown):
+                trade_statistics.max_intra_trade_drawdown = trade_statistics.total_net_profit + trade.mae - max_total_profit_loss_with_mfe
             
             if (trade.net_profit_loss > 0):
                 trade_statistics.number_of_winning_trades += 1
-                trade_statistics.total_profit_loss += trade.net_profit_loss
+                trade_statistics.total_net_profit += trade.net_profit_loss
                 trade_statistics.total_profit += trade.net_profit_loss
                 trade_statistics.average_profit += (trade.net_profit_loss - trade_statistics.average_profit) / trade_statistics.number_of_winning_trades
                 trade_statistics.average_winning_trade_duration += TimeDelta(seconds = (trade.duration.total_seconds() - trade_statistics.average_winning_trade_duration.total_seconds()) / trade_statistics.number_of_winning_trades)
@@ -75,8 +75,8 @@ class TradeStatisticsBuilder:
                 if (max_consecutive_winners > trade_statistics.max_consecutive_winning_trades):
                     trade_statistics.max_consecutive_winning_trades = max_consecutive_winners
                 
-                if (trade_statistics.total_profit_loss > max_total_profit_loss):
-                    max_total_profit_loss = trade_statistics.total_profit_loss
+                if (trade_statistics.total_net_profit > max_total_profit_loss):
+                    max_total_profit_loss = trade_statistics.total_net_profit
 
                     if (is_in_drawdown and (trade.exit_time - last_peak_time) > trade_statistics.max_drawdown_duration):
                         trade_statistics.max_drawdown_duration = trade.exit_time - last_peak_time
@@ -85,7 +85,7 @@ class TradeStatisticsBuilder:
                     is_in_drawdown = False
             else:
                 trade_statistics.number_of_lossing_trades += 1
-                trade_statistics.total_profit_loss += trade.net_profit_loss
+                trade_statistics.total_net_profit += trade.net_profit_loss
                 trade_statistics.total_loss += trade.net_profit_loss
                 
                 prev_average_loss: float = trade_statistics.average_loss
@@ -106,8 +106,8 @@ class TradeStatisticsBuilder:
                 if (max_consecutive_losers > trade_statistics.max_consecutive_lossing_trades):
                     trade_statistics.max_consecutive_lossing_trades = max_consecutive_losers
 
-                if (trade_statistics.total_profit_loss - max_total_profit_loss < trade_statistics.max_closed_trade_drawdown):
-                    trade_statistics.max_closed_trade_drawdown = trade_statistics.total_profit_loss - max_total_profit_loss
+                if (trade_statistics.total_net_profit - max_total_profit_loss < trade_statistics.max_closed_trade_drawdown):
+                    trade_statistics.max_closed_trade_drawdown = trade_statistics.total_net_profit - max_total_profit_loss
                 
                 is_in_drawdown = True
 
@@ -138,7 +138,7 @@ class TradeStatisticsBuilder:
         trade_statistics.profit_factor = trade_statistics.total_profit / abs(trade_statistics.total_loss) if trade_statistics.total_loss != 0 else 0 if trade_statistics.total_profit != 0 else 0
         trade_statistics.sharpe_ratio = trade_statistics.average_profit_loss / trade_statistics.profit_loss_standard_deviation if trade_statistics.profit_loss_standard_deviation != 0 else 0
         trade_statistics.sortino_ratio = trade_statistics.average_profit_loss / trade_statistics.profit_loss_downside_deviation if trade_statistics.profit_loss_downside_deviation != 0 else 0
-        trade_statistics.profit_to_max_drawdown_ratio = trade_statistics.total_profit_loss / abs(trade_statistics.max_closed_trade_drawdown) if trade_statistics.max_closed_trade_drawdown != 0 else 0
+        trade_statistics.profit_to_max_drawdown_ratio = trade_statistics.total_net_profit / abs(trade_statistics.max_closed_trade_drawdown) if trade_statistics.max_closed_trade_drawdown != 0 else 0
         trade_statistics.average_end_trade_drawdown = trade_statistics.average_profit_loss - trade_statistics.average_mae
         
         trade_statistics.net_profit_loss = net_profit_loss

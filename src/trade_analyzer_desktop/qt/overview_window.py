@@ -1,9 +1,9 @@
-
-from typing import Optional
+from typing import Optional, Union
 
 from PyQt6.QtWidgets import QWidget, QGridLayout, QLabel
 
-from ..analysis import AnalysisResults
+from .statistics_table import StatisticsTable
+from ..analysis import AnalysisResults, StatisticsResults
 
 class OverviewWindow(QWidget):
     
@@ -13,16 +13,25 @@ class OverviewWindow(QWidget):
 
         # Widgets
 
+
+        self.__statistics_table: StatisticsTable = StatisticsTable()
         # Layout 
         layout: QGridLayout = QGridLayout(self)
 
+        layout.addWidget(self.__statistics_table)
+
         # Default Data
-        self.__analysis_results: AnalysisResults = results
+        for key in results.keys:
+            if not key.startswith("Benchmark"):
+                statistics_results: Union[StatisticsResults, None] = results.get(key)
+                assert(statistics_results is not None)
+                self.__statistics_table.add_statistics_results(key, statistics_results)        
 
     # -------------------------------------------------- Properties --------------------------------------------------
 
     # -------------------------------------------------- Event Handlers --------------------------------------------------
 
     # -------------------------------------------------- Public Methods --------------------------------------------------
+
 
     # -------------------------------------------------- Private Methods --------------------------------------------------

@@ -23,7 +23,7 @@ class TradeStatistics():
         self.number_of_winning_trades: int = 0 # The total number of winning trades.
         self.number_of_lossing_trades: int = 0 # The total number of lossing trades.
         
-        self.total_profit_loss: float = 0 # Total profit/loss for all trades (as symbol currency)
+        self.total_net_profit: float = 0 # Total profit/loss for all trades (as symbol currency)
         self.total_profit: float = 0 # Total profit for all winning trades
         self.total_loss: float = 0 # Total loss for all lossing trades.
         self.total_fees: float = 0 # Sum of fees for all trades.
