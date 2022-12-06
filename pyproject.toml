@@ -12,6 +12,7 @@ dependencies = [
     "pyqt6-charts>=6.4.0",
     "yfinance>=0.1.87",
     "qdarkstyle>=3.1",
+    "reportlab>=3.6.12",
 ]
 requires-python = ">=3.9"
 readme = "README.md"
