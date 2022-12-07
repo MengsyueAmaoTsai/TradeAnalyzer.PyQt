@@ -161,7 +161,7 @@ class EquityChartWindow(QWidget):
         """
         equity_chart_points: List[ChartPoint] = self.__data_set_list.get_item(name).get_equity_chart_points(self.side, self.x_axis_type, self.display_units)
         drawdown_chart_points: List[ChartPoint] = self.__data_set_list.get_item(name).get_drawdown_chart_points(self.side, self.x_axis_type, self.display_units)
-        
+        print(len(equity_chart_points))
         if name.startswith("Benchmark") and self.x_axis_type == AxisType.Value:
             benchmark_item: DataSetListItem = self.__data_set_list.get_item(name)
             self.remove_series(name)

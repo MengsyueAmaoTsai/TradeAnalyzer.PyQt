@@ -16,7 +16,7 @@ class StatisticsTable(QTableWidget):
         "Profit Factor", 
         "Profit/Loss Ratio", 
         "Ret/DD Ratio", 
-        "Annual Returns%"
+        "Annual Returns%",
         "ALPHA", 
         "BETA", 
         "Sharpe Ratio", 
