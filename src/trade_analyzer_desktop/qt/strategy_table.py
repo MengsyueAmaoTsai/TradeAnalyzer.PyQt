@@ -18,7 +18,7 @@ from ..repositories import StrategyRepository, BacktestReportRepository, OrderRe
 class StrategyTable(QTableWidget):
 
     FIELDS: List[str] = [
-        "ID", "Description", "Type", "Side", "Trading Platform", "Starting Capital", "Default Backtest Report"
+        "ID", "Description", "Type", "Resolution", "Side", "Trading Platform", "Starting Capital", "Default Backtest Report"
     ]
 
     strategy_deleted: pyqtSignal = pyqtSignal()
@@ -99,6 +99,7 @@ class StrategyTable(QTableWidget):
         self.__strategy_form.id = strategy.id
         self.__strategy_form.description = strategy.description
         self.__strategy_form.type = strategy.type
+        self.__strategy_form.resolution = strategy.resolution
         self.__strategy_form.side = strategy.side
         self.__strategy_form.platform = strategy.platform
         self.__strategy_form.starting_capital = strategy.starting_capital
@@ -208,10 +209,11 @@ class StrategyTable(QTableWidget):
             self.setItem(row, 0, QTableWidgetItem(strategy.id))
             self.setItem(row, 1, QTableWidgetItem(strategy.description))
             self.setItem(row, 2, QTableWidgetItem(strategy.type.value))
-            self.setItem(row, 3, QTableWidgetItem(strategy.side.value))
-            self.setItem(row, 4, QTableWidgetItem(strategy.platform.value))
-            self.setItem(row, 5, QTableWidgetItem(str(strategy.starting_capital)))
-            self.setItem(row, 6, QTableWidgetItem(strategy.default_report_id))
+            self.setItem(row, 3, QTableWidgetItem(strategy.resolution.value))
+            self.setItem(row, 4, QTableWidgetItem(strategy.side.value))
+            self.setItem(row, 5, QTableWidgetItem(strategy.platform.value))
+            self.setItem(row, 6, QTableWidgetItem(str(strategy.starting_capital)))
+            self.setItem(row, 7, QTableWidgetItem(strategy.default_report_id))
 
         if self.rowCount() != 0:
             self.selectRow(0)
