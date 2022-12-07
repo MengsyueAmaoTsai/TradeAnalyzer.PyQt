@@ -24,7 +24,7 @@ class StrategyRepository:
     UPDATE strategies SET 
         description = :description,
         type = :type,
-        resolution = :resolution
+        resolution = :resolution,
         side = :side,
         platform = :platform,
         starting_capital = :starting_capital,
