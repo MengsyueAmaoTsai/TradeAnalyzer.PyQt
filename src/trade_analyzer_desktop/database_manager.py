@@ -15,6 +15,7 @@ class DatabaseManager:
         id VARCHAR(50) NOT NULL PRIMARY KEY,
         description TEXT,
         type VARCHAR(50),
+        resolution VARCHAR(50),
         side VARCHAR(50),
         platform VARCHAR(50),
         starting_capital FLOAT,

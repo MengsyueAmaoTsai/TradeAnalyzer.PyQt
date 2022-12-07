@@ -1,16 +1,17 @@
 
 from PyQt6.QtSql import QSqlQuery
 
-from ..enums import Side, StrategyType, TradingPlatform
+from ..enums import Side, StrategyType, TradingPlatform, Resolution
 
 class Strategy:
 
     def __init__(self, 
-        id: str, description: str, type: StrategyType, side: Side, platform: TradingPlatform, starting_capital: float, default_report_id: str = ""
+        id: str, description: str, type: StrategyType, resolution: Resolution, side: Side, platform: TradingPlatform, starting_capital: float, default_report_id: str = ""
     ) -> None:
         self.__id: str = id
         self.__description: str = description
         self.__type: StrategyType = type
+        self.__resolution: Resolution = resolution
         self.__side: Side = side  
         self.__platform: TradingPlatform = platform
         self.__starting_capital: float = starting_capital
@@ -41,6 +42,14 @@ class Strategy:
     @type.setter
     def type(self, type: StrategyType) -> None:
         self.__type = type
+
+    @property
+    def resolution(self) -> Resolution:
+        return self.__resolution
+
+    @resolution.setter
+    def resolution(self, resolution: Resolution) -> None:
+        self.__resolution = resolution
 
     @property
     def side(self) -> Side:
@@ -84,6 +93,7 @@ class Strategy:
             query.value("id"),
             query.value("description"),
             StrategyType(query.value("type")),
+            Resolution(query.value("resolution")),
             Side(query.value("side")),
             TradingPlatform(query.value("platform")),
             query.value("starting_capital"),

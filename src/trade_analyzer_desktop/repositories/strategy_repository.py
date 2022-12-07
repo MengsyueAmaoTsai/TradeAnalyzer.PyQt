@@ -11,8 +11,8 @@ class StrategyRepository:
     """      
 
     INSERT_STRATEGY_SQL: str = """
-    INSERT INTO strategies (id, description, type, side, platform, starting_capital, default_report_id) VALUES (
-        ?, ?, ?, ?, ?, ?, ?
+    INSERT INTO strategies (id, description, type, resolution, side, platform, starting_capital, default_report_id) VALUES (
+        ?, ?, ?, ?, ?, ?, ?, ?
     )
     """
 
@@ -24,6 +24,7 @@ class StrategyRepository:
     UPDATE strategies SET 
         description = :description,
         type = :type,
+        resolution = :resolution
         side = :side,
         platform = :platform,
         starting_capital = :starting_capital,
@@ -44,6 +45,7 @@ class StrategyRepository:
         query.addBindValue(strategy.id)
         query.addBindValue(strategy.description)
         query.addBindValue(strategy.type.value)
+        query.addBindValue(strategy.resolution.value)
         query.addBindValue(strategy.side.value)
         query.addBindValue(strategy.platform.value)
         query.addBindValue(strategy.starting_capital)
@@ -80,6 +82,7 @@ class StrategyRepository:
         query.bindValue(":description", strategy.description)
         query.bindValue(":type", strategy.type.value)
         query.bindValue(":side", strategy.side.value)
+        query.bindValue(":resolution", strategy.resolution.value)
         query.bindValue(":platform", strategy.platform.value)
         query.bindValue(":starting_capital", strategy.starting_capital)
         query.bindValue(":default_report_id", strategy.default_report_id)

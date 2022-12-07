@@ -3,7 +3,7 @@ from typing import Optional, Union
 from PyQt6.QtWidgets import QWidget, QGridLayout, QLineEdit, QComboBox, QDoubleSpinBox, QPushButton, QMessageBox, QLabel, QDialog
 from PyQt6.QtCore import pyqtSignal
 
-from ..enums import Side, StrategyType, TradingPlatform
+from ..enums import Side, StrategyType, TradingPlatform, Resolution
 from ..entities import Strategy
 from ..repositories import StrategyRepository
 
@@ -22,6 +22,8 @@ class EditStrategyDialog(QDialog):
         self.__description_input: QLineEdit = QLineEdit(self)
 
         self.__type_combo: QComboBox = QComboBox(self)
+
+        self.__resolution_combo: QComboBox = QComboBox(self)
 
         self.__side_combo: QComboBox = QComboBox(self)
 
@@ -47,17 +49,20 @@ class EditStrategyDialog(QDialog):
         layout.addWidget(QLabel("Type"), 2, 0, 1, 1)
         layout.addWidget(self.__type_combo, 2, 1, 1, 3)    
 
-        layout.addWidget(QLabel("Side"), 3, 0, 1, 1)
-        layout.addWidget(self.__side_combo, 3, 1, 1, 3)
+        layout.addWidget(QLabel("Resolution"), 3, 0, 1, 1)
+        layout.addWidget(self.__resolution_combo, 3, 1, 1, 3)    
 
-        layout.addWidget(QLabel("Platform"), 4, 0, 1, 1)
-        layout.addWidget(self.__platform_combo, 4, 1, 1, 3)
+        layout.addWidget(QLabel("Side"), 4, 0, 1, 1)
+        layout.addWidget(self.__side_combo, 4, 1, 1, 3)
 
-        layout.addWidget(QLabel("Starting Capital"), 5, 0, 1, 1)
-        layout.addWidget(self.__starting_capital_spinbox, 5, 1, 1, 3)
+        layout.addWidget(QLabel("Platform"), 5, 0, 1, 1)
+        layout.addWidget(self.__platform_combo, 5, 1, 1, 3)
 
-        layout.addWidget(self.__save_button, 6, 2, 1, 1)
-        layout.addWidget(self.__close_button, 6, 3, 1, 1)
+        layout.addWidget(QLabel("Starting Capital"), 6, 0, 1, 1)
+        layout.addWidget(self.__starting_capital_spinbox, 6, 1, 1, 3)
+
+        layout.addWidget(self.__save_button, 7, 2, 1, 1)
+        layout.addWidget(self.__close_button, 7, 3, 1, 1)
 
         # Default Data
         for i, type in enumerate(StrategyType):
@@ -65,6 +70,9 @@ class EditStrategyDialog(QDialog):
             
         for i, side in enumerate(Side):
             self.__side_combo.addItem(side.value, side)
+
+        for i, resolution in enumerate(Resolution):
+            self.__resolution_combo.addItem(resolution.value, resolution)
 
         for i, platform in enumerate(TradingPlatform):
             self.__platform_combo.addItem(platform.value, platform)
@@ -99,6 +107,15 @@ class EditStrategyDialog(QDialog):
     def type(self, type: StrategyType) -> None:
         index: int = list(StrategyType).index(type)
         self.__type_combo.setCurrentIndex(index)
+
+    @property
+    def resolution(self) -> Resolution:
+        return self.__resolution_combo.currentData()
+
+    @resolution.setter
+    def resolution(self, resolution: Resolution) -> None:
+        index: int = list(Resolution).index(resolution)
+        self.__resolution_combo.setCurrentIndex(index)
 
     @property
     def side(self) -> Side:
@@ -138,6 +155,7 @@ class EditStrategyDialog(QDialog):
         strategy.id = self.id
         strategy.description = self.description
         strategy.type = self.type
+        strategy.resolution = self.resolution
         strategy.side = self.side
         strategy.platform = self.platform
         strategy.starting_capital = self.starting_capital
@@ -158,12 +176,3 @@ class EditStrategyDialog(QDialog):
 
     # -------------------------------------------------- Public Methods --------------------------------------------------
     # -------------------------------------------------- Private Methods --------------------------------------------------
-    def __create_strategy(self, id: str, description: str, type: StrategyType, side: Side, platform: TradingPlatform, starting_capital: float) -> bool:
-         return StrategyRepository.insert(Strategy(
-            id, 
-            description,
-            type,
-            side,
-            platform,
-            starting_capital
-         ))

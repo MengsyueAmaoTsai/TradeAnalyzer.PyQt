@@ -6,3 +6,4 @@ from .action import Action
 from .instrument_type import InstrumentType
 from .order_status import OrderStatus
 from .position_status import PositionStatus
+from .resolution import Resolution
