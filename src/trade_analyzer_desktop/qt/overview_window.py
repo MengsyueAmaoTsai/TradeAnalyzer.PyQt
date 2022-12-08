@@ -39,8 +39,9 @@ class OverviewWindow(QWidget):
         self.__display_units_combo: QComboBox = QComboBox()
         self.__display_units_combo.currentIndexChanged.connect(self.on_display_units_combo_currenct_index_changed)
 
-        self.__statistics_view: StatisticsView = StatisticsView()
+        self.__statistics_view: StatisticsView = StatisticsView(results)
         self.__statistics_table: StatisticsTable = StatisticsTable()
+        self.__statistics_table.results_selected.connect()
         
         # Layout 
         layout: QGridLayout = QGridLayout(self)
@@ -56,7 +57,6 @@ class OverviewWindow(QWidget):
         layout.addWidget(self.__statistics_table, 8, 0, 2, 10)
 
         # Default Data
-
         for i, units in enumerate(DisplayUnits):
             self.__display_units_combo.addItem(units.value, units)    
 

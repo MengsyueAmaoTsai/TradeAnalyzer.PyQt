@@ -1,7 +1,8 @@
 from typing import Optional, List, Union
 
-from PyQt6.QtWidgets import QTableWidget, QTableWidgetItem, QWidget, QHeaderView
-from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QTableWidget, QTableWidgetItem, QWidget, QMenu
+from PyQt6.QtCore import Qt, QPoint, pyqtSignal
+from PyQt6.QtGui import QAction
 
 from ..analysis import StatisticsResults, TradeStatistics, StrategyDailyStatistics, DailyStatistics
 
@@ -26,6 +27,8 @@ class StatisticsTable(QTableWidget):
         "Treynor Ratio"
     ]
 
+    results_selected: pyqtSignal = pyqtSignal(str)
+
     def __init__(self, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
         self.verticalHeader().setVisible(False)        
@@ -33,13 +36,31 @@ class StatisticsTable(QTableWidget):
         self.setHorizontalHeaderLabels(self.FIELDS)
         self.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
         self.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
+        self.setSelectionMode(QTableWidget.SelectionMode.SingleSelection)
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        # self.customContextMenuRequested.connect(self.on_context_menu_requested)
+        self.customContextMenuRequested.connect(self.on_context_menu_requested)
 
-    
     # -------------------------------------------------- Properties --------------------------------------------------
+    @property
+    def current_analysis_results_key(self) -> str:
+        return self.item(self.currentRow(), 0).text().strip()
 
     # -------------------------------------------------- Event Handlers --------------------------------------------------
+    def on_context_menu_requested(self, point: QPoint) -> None:
+        if not self.selectedItems():
+            return 
+        
+        menu: QMenu = QMenu(self)
+        view_results_action: QAction = menu.addAction("View Results")
+        view_results_action.triggered.connect(self.on_view_results_action_triggered)
+        menu.exec(self.mapToGlobal(point))        
+
+    def on_view_results_action_triggered(self, checked: bool) -> None:
+        """
+        Show current selected item into statistics view.
+        """
+        key: str = self.current_analysis_results_key
+        self.results_selected.emit(key)
 
     # -------------------------------------------------- Public Methods --------------------------------------------------
 
