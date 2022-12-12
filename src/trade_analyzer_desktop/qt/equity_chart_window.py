@@ -58,28 +58,28 @@ class EquityChartWindow(QWidget):
         # Layout
         layout: QGridLayout = QGridLayout(self)
         layout.setSpacing(10)
-        layout.addWidget(self.__data_set_list, 0, 0, 20, 2)
+        layout.addWidget(self.__data_set_list, 0, 0, 20, 6)
 
         side_label: QLabel = QLabel("Side")
         side_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        layout.addWidget(side_label, 0, 2, 1, 2)
-        layout.addWidget(self.__all_side_button, 0, 4, 1, 2)
-        layout.addWidget(self.__long_side_button, 0, 6, 1, 2)
-        layout.addWidget(self.__short_side_button, 0, 8, 1, 2)
+        layout.addWidget(side_label, 0, 6, 1, 2)
+        layout.addWidget(self.__all_side_button, 0, 8, 1, 2)
+        layout.addWidget(self.__long_side_button, 0, 10, 1, 2)
+        layout.addWidget(self.__short_side_button, 0, 12, 1, 2)
 
         axis_label: QLabel = QLabel("X Axis")
         axis_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        layout.addWidget(axis_label, 0, 10, 1, 2)
-        layout.addWidget(self.__by_time_button, 0, 12, 1, 2)
-        layout.addWidget(self.__by_trade_button, 0, 14, 1, 2)
+        layout.addWidget(axis_label, 0, 14, 1, 2)
+        layout.addWidget(self.__by_time_button, 0, 16, 1, 2)
+        layout.addWidget(self.__by_trade_button, 0, 18, 1, 2)
 
         display_units_label: QLabel = QLabel("Display Units")
         display_units_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        layout.addWidget(display_units_label, 0, 16, 1, 2)
-        layout.addWidget(self.__display_units_combo, 0, 18, 1, 2)
+        layout.addWidget(display_units_label, 0, 20, 1, 2)
+        layout.addWidget(self.__display_units_combo, 0, 22, 1, 2)
 
-        layout.addWidget(self.__equity_chart, 1, 2, 15, 18)
-        layout.addWidget(self.__drawdown_chart, 16, 2, 4, 18)
+        layout.addWidget(self.__equity_chart, 1, 6, 15, 18)
+        layout.addWidget(self.__drawdown_chart, 16, 6, 4, 18)
         
         # Data
         for i, units in enumerate(DisplayUnits):
