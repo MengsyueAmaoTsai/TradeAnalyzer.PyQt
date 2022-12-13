@@ -76,7 +76,7 @@ class UploadBacktestReportDialog(QDialog):
 
         # Default Data
         self.__start_date_input.setDate(QDate(2020, 1, 1))
-        self.__end_date_input.setDate(QDate.currentDate().addDays(-1))
+        self.__end_date_input.setDate(QDate.currentDate())
 
         self.__orders_from_file: List[Order] = TextFileOrderProvider.read(path)
 
