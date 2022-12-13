@@ -133,6 +133,15 @@ class TradeStatisticsBuilder:
             
             trade_statistics.total_fees += trade.net_profit_loss
 
+
+        r: float = trade_statistics.average_loss  # Calc R
+        r_multiples: List[float] = [trade.net_profit_loss / abs(r) for trade in trades if r != 0]
+        r_expectancy: float = sum(r_multiples) / len(r_multiples) 
+        
+        r_multiples_varince: float = sum((r_multiple - r_expectancy) ** 2 for r_multiple in r_multiples) / len(r_multiples)
+        r_multiples_std: float = math.sqrt(r_multiples_varince)
+        sqn: float = r_expectancy / r_multiples_std * math.sqrt(100)
+
         trade_statistics.profit_loss_ratio = trade_statistics.average_profit / abs(trade_statistics.average_loss) if trade_statistics.average_loss != 0 else 0 
         trade_statistics.win_rate = trade_statistics.number_of_winning_trades / trade_statistics.total_number_of_trades if trade_statistics.total_number_of_trades != 0 else 0
         trade_statistics.profit_factor = trade_statistics.total_profit / abs(trade_statistics.total_loss) if trade_statistics.total_loss != 0 else 0 if trade_statistics.total_profit != 0 else 0
@@ -147,5 +156,5 @@ class TradeStatisticsBuilder:
         trade_statistics.cumulative_returns = cumulative_returns
         trade_statistics.drawdown = drawdown
         trade_statistics.drawdown_percent = drawdown_percent
-
+        trade_statistics.system_quality_number = sqn
         return trade_statistics
