@@ -24,7 +24,8 @@ class StatisticsTable(QTableWidget):
         "Sortino Ratio", 
         "Information Ratio", 
         "Tracking Error", 
-        "Treynor Ratio"
+        "Treynor Ratio",
+        "System Quality Number"
     ]
 
     results_selected: pyqtSignal = pyqtSignal(str)
@@ -87,6 +88,7 @@ class StatisticsTable(QTableWidget):
         self.setItem(row, 13, QTableWidgetItem(str(round(daily_statistics.information_ratio, 2))))
         self.setItem(row, 14, QTableWidgetItem(str(round(daily_statistics.tracking_error, 2))))
         self.setItem(row, 15, QTableWidgetItem(str(round(daily_statistics.treynor_ratio, 2))))
+        self.setItem(row, 16, QTableWidgetItem(str(round(trade_statistics.system_quality_number, 2))))
 
         self.resizeColumnsToContents()
         
