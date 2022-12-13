@@ -135,7 +135,7 @@ class TradeStatisticsBuilder:
 
 
         r: float = trade_statistics.average_loss  # Calc R
-        r_multiples: List[float] = [trade.net_profit_loss / abs(r) for trade in trades if r != 0]
+        r_multiples: List[float] = [trade.net_profit_loss / abs(r) for trade in trades]
         r_expectancy: float = sum(r_multiples) / len(r_multiples) 
         
         r_multiples_varince: float = sum((r_multiple - r_expectancy) ** 2 for r_multiple in r_multiples) / len(r_multiples)

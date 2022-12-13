@@ -83,7 +83,7 @@ class StatisticsTable(QTableWidget):
         self.setItem(row, 8, QTableWidgetItem(str(f"{round(daily_statistics.compounding_annual_return * 100, 2)}%")))
         self.setItem(row, 9, QTableWidgetItem(str(round(daily_statistics.alpha, 2))))
         self.setItem(row, 10, QTableWidgetItem(str(round(daily_statistics.beta, 2))))
-        self.setItem(row, 11, QTableWidgetItem(str(round(daily_statistics.sharpe_ratio, 2))))
+        self.setItem(row, 11, QTableWidgetItem(str(round(trade_statistics.sharpe_ratio, 2))))
         self.setItem(row, 12, QTableWidgetItem(str(round(trade_statistics.sortino_ratio, 2))))
         self.setItem(row, 13, QTableWidgetItem(str(round(daily_statistics.information_ratio, 2))))
         self.setItem(row, 14, QTableWidgetItem(str(round(daily_statistics.tracking_error, 2))))
