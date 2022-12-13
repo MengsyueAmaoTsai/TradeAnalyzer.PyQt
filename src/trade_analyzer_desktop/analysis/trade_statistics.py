@@ -60,6 +60,7 @@ class TradeStatistics():
         self.profit_loss_downside_deviation: float = 0 # The downside deviation of the profits/losses for all trades.
         self.sharpe_ratio: float = 0 # Ratio of the average profit/loss to the standard deviation.
         self.sortino_ratio: float = 0 # Ratio of the average profit/loss to the downside deviation.
+        self.system_quality_number: float = 0
 
    
    
