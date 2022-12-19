@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import QWidget, QGridLayout, QPushButton, QButtonGroup, QLa
 from .charts import DisplayUnits
 from .statistics_view import StatisticsView
 from .statistics_table import StatisticsTable
-from ..analysis import AnalysisResults, StatisticsResults
+from ..analysis import AnalysisResults, StatisticsResults, TradeStatistics, DailyStatistics, StrategyPerformance, BenchmarkPerformance
 
 
 class OverviewWindow(QWidget):
@@ -41,7 +41,7 @@ class OverviewWindow(QWidget):
 
         self.__statistics_view: StatisticsView = StatisticsView(results)
         self.__statistics_table: StatisticsTable = StatisticsTable()
-        self.__statistics_table.results_selected.connect()
+        self.__statistics_table.results_selected.connect(self.on_result_selected)
         
         # Layout 
         layout: QGridLayout = QGridLayout(self)
@@ -53,8 +53,8 @@ class OverviewWindow(QWidget):
         layout.addWidget(QLabel("Display Units"), 0, 4, 1, 1)
         layout.addWidget(self.__display_units_combo, 0, 5, 1, 1)
         
-        layout.addWidget(self.__statistics_view, 1, 0, 7, 10)
-        layout.addWidget(self.__statistics_table, 8, 0, 2, 10)
+        layout.addWidget(self.__statistics_view, 1, 0, 6, 10)
+        layout.addWidget(self.__statistics_table, 7, 0, 3, 10)
 
         # Default Data
         for i, units in enumerate(DisplayUnits):
@@ -66,6 +66,8 @@ class OverviewWindow(QWidget):
                 assert(statistics_results is not None)
                 self.__statistics_table.add_statistics_results(key, statistics_results)        
 
+        self.__results: AnalysisResults = results
+        
     # -------------------------------------------------- Properties --------------------------------------------------
 
     # -------------------------------------------------- Event Handlers --------------------------------------------------
@@ -80,7 +82,14 @@ class OverviewWindow(QWidget):
 
     def on_display_units_combo_currenct_index_changed(self, index: int) -> None:
         pass
-            
+
+    def on_result_selected(self, key: str) -> None:
+        results: Union[StatisticsResults, None] = self.__results.get(key)
+        assert(results is not None)
+        performance: Union[StrategyPerformance, BenchmarkPerformance, None] = results.total_performance
+        assert(isinstance(performance, StrategyPerformance))
+        self.__statistics_view.set_performance(performance)
+                
     # -------------------------------------------------- Public Methods --------------------------------------------------
 
 

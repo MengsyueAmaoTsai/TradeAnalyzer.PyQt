@@ -48,6 +48,7 @@ class StrategyWindow(QWidget):
         self.__backtest_report_table.set_backtest_reports(backtest_reports)
 
     def on_report_deleted(self) -> None:
+        # TODO: If deleted report id is any strategy using it. Set strategy default report to null.
         backtest_reports: List[BacktestReport] = BacktestReportRepository.query_by_strategy_id(self.__strategy_table.current_strategy_id)
         self.__backtest_report_table.set_backtest_reports(backtest_reports)
 
