@@ -140,7 +140,7 @@ class StrategyTable(QTableWidget):
         return 
 
     def on_upload_report_action_clicked(self, checked: bool) -> None:
-        path: str = QFileDialog.getOpenFileName(self, "Open File", "C:/RichillCapital/Output/Strategy", "Text File(*.txt)")[0]
+        path: str = QFileDialog.getOpenFileName(self, "Open File", "C:/RichillCapital/Output/Bots/Executions", "Text File(*.txt)")[0]
 
         if path.isspace() or path.__eq__(str()):
             return 
