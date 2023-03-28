@@ -1,4 +1,5 @@
 [tool.pdm]
+[tool.pdm.dev-dependencies]
 
 [project]
 name = "trade-analyzer-desktop"
