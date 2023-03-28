@@ -7,15 +7,22 @@ from ..enums import InstrumentType
 
 
 class Instrument:
-
-    def __init__(self, symbol: str, description: str, exchange: str, type: InstrumentType, fee_pricing: float, point_value: float) -> None:
+    def __init__(
+        self,
+        symbol: str,
+        description: str,
+        exchange: str,
+        type: InstrumentType,
+        fee_pricing: float,
+        point_value: float,
+    ) -> None:
         self.__symbol: str = symbol
         self.__description: str = description
 
         ex: Union[Exchange, None] = Exchange.create(exchange, fee_pricing)
-        assert(ex is not None)
+        assert ex is not None
 
-        self.__exchange: Exchange = ex 
+        self.__exchange: Exchange = ex
         self.__type: InstrumentType = type
         self.__fee_pricing: float = fee_pricing
         self.__point_value: float = point_value
@@ -39,7 +46,7 @@ class Instrument:
     @property
     def fee_pricing(self) -> float:
         return self.__fee_pricing
-    
+
     @property
     def point_value(self) -> float:
         return self.__point_value

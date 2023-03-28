@@ -1,5 +1,5 @@
-
 from enum import Enum
+
 
 class Resolution(Enum):
     M1 = "1 Min"

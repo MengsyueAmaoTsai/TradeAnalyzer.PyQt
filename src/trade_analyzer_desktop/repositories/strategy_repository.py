@@ -4,11 +4,11 @@ from PyQt6.QtSql import QSqlQuery
 
 from ..entities import Strategy
 
-class StrategyRepository:
 
+class StrategyRepository:
     QUERY_ALL_STRATEGIES_SQL: str = """
     SELECT * FROM strategies
-    """      
+    """
 
     INSERT_STRATEGY_SQL: str = """
     INSERT INTO strategies (id, description, type, resolution, side, platform, starting_capital, default_report_id) VALUES (
@@ -41,7 +41,7 @@ class StrategyRepository:
     def insert(cls, strategy: Strategy) -> bool:
         query: QSqlQuery = QSqlQuery()
         query.prepare(cls.INSERT_STRATEGY_SQL)
-        
+
         query.addBindValue(strategy.id)
         query.addBindValue(strategy.description)
         query.addBindValue(strategy.type.value)
@@ -57,8 +57,8 @@ class StrategyRepository:
         strategies: List[Strategy] = []
         query: QSqlQuery = QSqlQuery()
         query.exec(cls.QUERY_ALL_STRATEGIES_SQL)
-        
-        while (query.next()):
+
+        while query.next():
             strategies.append(Strategy.from_query(query))
         return strategies
 
@@ -71,7 +71,7 @@ class StrategyRepository:
         query.bindValue(":strategy_id", id)
         query.exec()
 
-        if (query.next()):
+        if query.next():
             strategy = Strategy.from_query(query)
         return strategy
 
@@ -95,11 +95,10 @@ class StrategyRepository:
         query.prepare(cls.DELETE_BY_ID_SQL)
         query.bindValue(":strategy_id", id)
         return query.exec()
-    
+
     @classmethod
     def delete(cls, strategy: Strategy) -> bool:
         query: QSqlQuery = QSqlQuery()
         query.prepare(cls.DELETE_BY_ID_SQL)
         query.bindValue(":strategy_id", strategy.id)
         return query.exec()
-

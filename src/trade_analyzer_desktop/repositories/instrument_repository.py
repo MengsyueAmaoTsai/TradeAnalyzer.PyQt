@@ -6,7 +6,6 @@ from ..entities import Instrument
 
 
 class InstrumentRepository:
-
     QUERY_ALL_INSTRUMENTS_SQL: str = f"""
     SELECT * FROM instruments
     """
@@ -17,15 +16,15 @@ class InstrumentRepository:
     INSERT_INSTRUMENTS_SQL: str = """
     INSERT INTO instruments (symbol, description, exchange, type, fee_pricing, point_value)
     VALUES (?, ?, ?, ?, ?, ?)
-    """    
+    """
 
     @classmethod
     def query_all(cls) -> List[Instrument]:
         instruments: List[Instrument] = []
         query: QSqlQuery = QSqlQuery()
         query.exec(cls.QUERY_ALL_INSTRUMENTS_SQL)
-        
-        while (query.next()):
+
+        while query.next():
             instruments.append(Instrument.from_query(query))
         return instruments
 
@@ -38,9 +37,9 @@ class InstrumentRepository:
         query.bindValue(":symbol", symbol)
         query.exec()
 
-        if (query.next()):
+        if query.next():
             instrument = Instrument.from_query(query)
-        return instrument        
+        return instrument
 
     @classmethod
     def insert_batch(cls, instruments: List[Instrument]) -> bool:

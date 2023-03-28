@@ -1,4 +1,3 @@
-
 from datetime import datetime as DateTime, timedelta as TimeDelta
 from typing import List
 
@@ -7,10 +6,20 @@ from ..events import OrderFilledEvent
 
 
 class Trade:
-
-    def __init__(self, 
-        id: int, symbol: str, entry_time: DateTime, entry_price: float, side: Side, quantity: float, exit_time: DateTime, exit_price: float, 
-        gross_profit_loss: float, fee: float, strategy_id, fills: List[OrderFilledEvent]
+    def __init__(
+        self,
+        id: int,
+        symbol: str,
+        entry_time: DateTime,
+        entry_price: float,
+        side: Side,
+        quantity: float,
+        exit_time: DateTime,
+        exit_price: float,
+        gross_profit_loss: float,
+        fee: float,
+        strategy_id,
+        fills: List[OrderFilledEvent],
     ) -> None:
         self.__id: int = id
         self.__symbol: str = symbol
@@ -27,7 +36,7 @@ class Trade:
         self.__strategy_id: str = strategy_id
         self.__fills: List[OrderFilledEvent] = fills
 
-    # -------------------------------------------------- Properties -------------------------------------------------- 
+    # -------------------------------------------------- Properties --------------------------------------------------
     @property
     def id(self) -> int:
         return self.__id
@@ -74,16 +83,16 @@ class Trade:
 
     @property
     def net_profit_loss(self) -> float:
-        return self.__gross_profit_loss - self.__fee        
+        return self.__gross_profit_loss - self.__fee
 
     @property
     def mae(self) -> float:
         return self.__mae
-    
+
     @property
     def mfe(self) -> float:
         return self.__mfe
-    
+
     @property
     def duration(self) -> TimeDelta:
         return self.__exit_time - self.__entry_time
@@ -93,7 +102,7 @@ class Trade:
         return self.net_profit_loss - self.__mfe
 
     @property
-    def strategy_id(self) -> str: 
+    def strategy_id(self) -> str:
         return self.__strategy_id
 
     @property

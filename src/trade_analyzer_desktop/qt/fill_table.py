@@ -1,4 +1,3 @@
-
 from typing import Optional, List
 
 from PyQt6.QtWidgets import QTableWidget, QTableWidgetItem, QWidget, QHeaderView
@@ -8,9 +7,12 @@ from ..events import OrderFilledEvent
 
 
 class FillTable(QTableWidget):
-
     FIELDS: List[str] = [
-        "DateTime", "Action", "Filled Quantity", "Avg Filled Price", "Fee"
+        "DateTime",
+        "Action",
+        "Filled Quantity",
+        "Avg Filled Price",
+        "Fee",
     ]
 
     def __init__(self, parent: Optional[QWidget] = None) -> None:
@@ -29,7 +31,7 @@ class FillTable(QTableWidget):
 
         for fill in fills:
             row: int = self.rowCount()
-            self.setRowCount(row + 1)        
+            self.setRowCount(row + 1)
 
             self.setItem(row, 0, QTableWidgetItem(str(fill.datetime)))
             self.setItem(row, 1, QTableWidgetItem(fill.action.value))

@@ -1,8 +1,14 @@
 from typing import List, Union, Dict, overload, Any
-from datetime import date as Date 
+from datetime import date as Date
 import copy
 
-from ..entities import Order, Instrument, Strategy as StrategyModel, BacktestReport, Trade
+from ..entities import (
+    Order,
+    Instrument,
+    Strategy as StrategyModel,
+    BacktestReport,
+    Trade,
+)
 from ..trading.strategies import Strategy
 from ..enums import OrderStatus, StrategyType
 from ..events import OrderFilledEvent
@@ -14,22 +20,32 @@ from .statistics_results import StatisticsResults
 
 
 class Analyzer:
-
     @classmethod
     def analyze_reports(
-            cls, report_models: List[BacktestReport], starting_capital: float, start_date: Date, end_date: Date, benchmark_symbol: BenchmarkSymbol
-        ) -> AnalysisResults:
-        results: AnalysisResults = AnalysisResults(starting_capital, start_date, end_date, benchmark_symbol)
-        
+        cls,
+        report_models: List[BacktestReport],
+        starting_capital: float,
+        start_date: Date,
+        end_date: Date,
+        benchmark_symbol: BenchmarkSymbol,
+    ) -> AnalysisResults:
+        results: AnalysisResults = AnalysisResults(
+            starting_capital, start_date, end_date, benchmark_symbol
+        )
+
         # Builds benchmark results.
-        benchmark_results: StatisticsResults = StatisticsBuilder.build_benchmark(benchmark_symbol, starting_capital, start_date, end_date)
-        
+        benchmark_results: StatisticsResults = StatisticsBuilder.build_benchmark(
+            benchmark_symbol, starting_capital, start_date, end_date
+        )
+
         # Builds strategy results.
         instruments: List[Instrument] = InstrumentRepository.query_all()
 
         for report in report_models:
-            model: Union[StrategyModel, None] = StrategyRepository.query_by_id(report.strategy_id)
-            assert(model is not None)
+            model: Union[StrategyModel, None] = StrategyRepository.query_by_id(
+                report.strategy_id
+            )
+            assert model is not None
             model.default_report_id = report.id
             strategy_id: str = f"{model.id}:{model.default_report_id}"
 
@@ -37,42 +53,68 @@ class Analyzer:
             strategy: Strategy = Strategy(strategy_id, model.description, model.type)
 
             # Get filted orders by date range.
-            orders: List[Order] = list(filter(
-                lambda order: order.datetime.date() >= start_date and order.datetime.date() <= end_date, OrderRepository.query_by_strategy_id(strategy.id))
+            orders: List[Order] = list(
+                filter(
+                    lambda order: order.datetime.date() >= start_date
+                    and order.datetime.date() <= end_date,
+                    OrderRepository.query_by_strategy_id(strategy.id),
+                )
             )
-            
+
             # Start runtime sumulation.
             for order in orders:
-                instrument: Union[Instrument, None] = next(filter(lambda instrument: instrument.symbol == order.symbol, instruments), None)
-                
+                instrument: Union[Instrument, None] = next(
+                    filter(
+                        lambda instrument: instrument.symbol == order.symbol,
+                        instruments,
+                    ),
+                    None,
+                )
+
                 if instrument is None:
-                    raise RuntimeError(f"No data avaliable for this instrument: {order.symbol}")
+                    raise RuntimeError(
+                        f"No data avaliable for this instrument: {order.symbol}"
+                    )
 
                 e: OrderFilledEvent = cls.__try_match_order(strategy, instrument, order)
                 strategy.on_order_filled(e)
 
             # Get trading results of strategy instance.
             key: str = f"Strategy:{strategy_id}"
-            results.add(key, StatisticsBuilder.build_strategy(
-                strategy.closed_trades, 
-                benchmark_results.total_performance.daily_statistics.returns,
-                starting_capital,
-                start_date,
-                end_date                
-            ))
+            results.add(
+                key,
+                StatisticsBuilder.build_strategy(
+                    strategy.closed_trades,
+                    benchmark_results.total_performance.daily_statistics.returns,
+                    starting_capital,
+                    start_date,
+                    end_date,
+                ),
+            )
         results.add(f"Benchmark:{benchmark_symbol.value}", benchmark_results)
         return results
 
     @classmethod
-    def analyze_strategies(cls, strategies: List[StrategyModel], starting_capital: float, start_date: Date, end_date: Date, benchmark_symbol: BenchmarkSymbol) -> AnalysisResults:
-        results: AnalysisResults = AnalysisResults(starting_capital, start_date, end_date, benchmark_symbol)
-        
+    def analyze_strategies(
+        cls,
+        strategies: List[StrategyModel],
+        starting_capital: float,
+        start_date: Date,
+        end_date: Date,
+        benchmark_symbol: BenchmarkSymbol,
+    ) -> AnalysisResults:
+        results: AnalysisResults = AnalysisResults(
+            starting_capital, start_date, end_date, benchmark_symbol
+        )
+
         # Builds benchmark results.
-        benchmark_results: StatisticsResults = StatisticsBuilder.build_benchmark(benchmark_symbol, starting_capital, start_date, end_date)
-        
+        benchmark_results: StatisticsResults = StatisticsBuilder.build_benchmark(
+            benchmark_symbol, starting_capital, start_date, end_date
+        )
+
         # Builds strategy results.
         instruments: List[Instrument] = InstrumentRepository.query_all()
-        
+
         portfolio_trades: List[Trade] = []
 
         for model in strategies:
@@ -82,8 +124,12 @@ class Analyzer:
             strategy: Strategy = Strategy(strategy_id, model.description, model.type)
 
             # Get filted orders by date range.
-            orders: List[Order] = list(filter(
-                lambda order: order.datetime.date() >= start_date and order.datetime.date() <= end_date, OrderRepository.query_by_strategy_id(strategy.id))
+            orders: List[Order] = list(
+                filter(
+                    lambda order: order.datetime.date() >= start_date
+                    and order.datetime.date() <= end_date,
+                    OrderRepository.query_by_strategy_id(strategy.id),
+                )
             )
 
             cls.__mock_matching(strategy, instruments, orders)
@@ -94,34 +140,44 @@ class Analyzer:
 
             # Get trading results of strategy instance.
             key: str = f"Strategy:{strategy_id}"
-            results.add(key, StatisticsBuilder.build_strategy(
-                strategy.closed_trades, 
-                benchmark_results.total_performance.daily_statistics.returns,
-                starting_capital,
-                start_date,
-                end_date                
-            ))
-        
+            results.add(
+                key,
+                StatisticsBuilder.build_strategy(
+                    strategy.closed_trades,
+                    benchmark_results.total_performance.daily_statistics.returns,
+                    starting_capital,
+                    start_date,
+                    end_date,
+                ),
+            )
+
         if len(strategies) > 1:
             # Re-assign trade id for portfolio strategy.
             # sorted_trades: List[Trade] = sorted(portfolio_trades, key = lambda trade: trade.exit_time.timestamp())
-            
-            sorted_trades: List[Trade] = sorted(portfolio_trades, key = lambda trade: trade.exit_time)
+
+            sorted_trades: List[Trade] = sorted(
+                portfolio_trades, key=lambda trade: trade.exit_time
+            )
             for i in range(len(sorted_trades)):
                 sorted_trades[i].id = i + 1
 
-            results.add("All", StatisticsBuilder.build_strategy(
-                sorted_trades, 
-                benchmark_results.total_performance.daily_statistics.returns,
-                starting_capital,
-                start_date,
-                end_date               
-            ))
+            results.add(
+                "All",
+                StatisticsBuilder.build_strategy(
+                    sorted_trades,
+                    benchmark_results.total_performance.daily_statistics.returns,
+                    starting_capital,
+                    start_date,
+                    end_date,
+                ),
+            )
         results.add(f"Benchmark:{benchmark_symbol.value}", benchmark_results)
         return results
 
-    @classmethod 
-    def __try_match_order(cls, strategy: Strategy, instrument: Instrument, order: Order) -> OrderFilledEvent:
+    @classmethod
+    def __try_match_order(
+        cls, strategy: Strategy, instrument: Instrument, order: Order
+    ) -> OrderFilledEvent:
         order.filled_quantity = order.quantity
         order.avg_filled_price = order.price
         order.remaining_quantity -= order.filled_quantity
@@ -130,16 +186,24 @@ class Analyzer:
         e: OrderFilledEvent = OrderFilledEvent(order)
         e.fee = instrument.exchange.get_order_fee(e, instrument.point_value)
         return e
-    
+
     @classmethod
-    def __mock_matching(cls, strategy: Strategy, instruments: List[Instrument], orders: List[Order]) -> None:
+    def __mock_matching(
+        cls, strategy: Strategy, instruments: List[Instrument], orders: List[Order]
+    ) -> None:
         # Start runtime sumulation.
         for order in orders:
-            instrument: Union[Instrument, None] = next(filter(lambda instrument: instrument.symbol == order.symbol, instruments), None)
-            
+            instrument: Union[Instrument, None] = next(
+                filter(
+                    lambda instrument: instrument.symbol == order.symbol, instruments
+                ),
+                None,
+            )
+
             if instrument is None:
-                raise RuntimeError(f"No data avaliable for this instrument: {order.symbol}")
+                raise RuntimeError(
+                    f"No data avaliable for this instrument: {order.symbol}"
+                )
 
             e: OrderFilledEvent = cls.__try_match_order(strategy, instrument, order)
             strategy.on_order_filled(e)
-

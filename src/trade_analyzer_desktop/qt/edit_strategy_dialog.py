@@ -1,14 +1,24 @@
 from typing import Optional, Union
 
-from PyQt6.QtWidgets import QWidget, QGridLayout, QLineEdit, QComboBox, QDoubleSpinBox, QPushButton, QMessageBox, QLabel, QDialog
+from PyQt6.QtWidgets import (
+    QWidget,
+    QGridLayout,
+    QLineEdit,
+    QComboBox,
+    QDoubleSpinBox,
+    QPushButton,
+    QMessageBox,
+    QLabel,
+    QDialog,
+)
 from PyQt6.QtCore import pyqtSignal
 
 from ..enums import Side, StrategyType, TradingPlatform, Resolution
 from ..entities import Strategy
 from ..repositories import StrategyRepository
 
-class EditStrategyDialog(QDialog):
 
+class EditStrategyDialog(QDialog):
     strategy_updated: pyqtSignal = pyqtSignal()
 
     def __init__(self, parent: Optional[QWidget] = None) -> None:
@@ -18,7 +28,7 @@ class EditStrategyDialog(QDialog):
         self.__id_input: QLineEdit = QLineEdit(self)
         self.__id_input.setEnabled(False)
         self.__id_input.textChanged.connect(self.on_id_text_changed)
-        
+
         self.__description_input: QLineEdit = QLineEdit(self)
 
         self.__type_combo: QComboBox = QComboBox(self)
@@ -36,21 +46,21 @@ class EditStrategyDialog(QDialog):
         self.__save_button.setEnabled(False)
 
         self.__close_button: QPushButton = QPushButton("Close", self)
-        self.__close_button.clicked.connect(self.on_close_button_clicked)   
+        self.__close_button.clicked.connect(self.on_close_button_clicked)
 
         # Layout
         layout: QGridLayout = QGridLayout(self)
         layout.addWidget(QLabel("Strategy Id"), 0, 0, 1, 1)
         layout.addWidget(self.__id_input, 0, 1, 1, 3)
-        
+
         layout.addWidget(QLabel("Description"), 1, 0, 1, 1)
         layout.addWidget(self.__description_input, 1, 1, 1, 3)
 
         layout.addWidget(QLabel("Type"), 2, 0, 1, 1)
-        layout.addWidget(self.__type_combo, 2, 1, 1, 3)    
+        layout.addWidget(self.__type_combo, 2, 1, 1, 3)
 
         layout.addWidget(QLabel("Resolution"), 3, 0, 1, 1)
-        layout.addWidget(self.__resolution_combo, 3, 1, 1, 3)    
+        layout.addWidget(self.__resolution_combo, 3, 1, 1, 3)
 
         layout.addWidget(QLabel("Side"), 4, 0, 1, 1)
         layout.addWidget(self.__side_combo, 4, 1, 1, 3)
@@ -67,7 +77,7 @@ class EditStrategyDialog(QDialog):
         # Default Data
         for i, type in enumerate(StrategyType):
             self.__type_combo.addItem(type.value, type)
-            
+
         for i, side in enumerate(Side):
             self.__side_combo.addItem(side.value, side)
 
@@ -81,7 +91,7 @@ class EditStrategyDialog(QDialog):
         self.__starting_capital_spinbox.setMinimum(10000 * 10)
         self.__starting_capital_spinbox.setValue(10000 * 1000)
         self.__starting_capital_spinbox.setSingleStep(1000)
-        
+
     # -------------------------------------------------- Properties --------------------------------------------------
     @property
     def id(self) -> str:
@@ -90,7 +100,7 @@ class EditStrategyDialog(QDialog):
     @id.setter
     def id(self, id: str) -> None:
         self.__id_input.setText(id.strip())
-    
+
     @property
     def description(self) -> str:
         return self.__description_input.text().strip()
@@ -142,16 +152,18 @@ class EditStrategyDialog(QDialog):
     @starting_capital.setter
     def starting_capital(self, starting_capital: float) -> None:
         self.__starting_capital_spinbox.setValue(starting_capital)
-        
+
     # -------------------------------------------------- Event Handlers --------------------------------------------------
     def on_id_text_changed(self, id: str) -> None:
-        self.__save_button.setEnabled(True) if not (id.isspace() or id.__eq__(str())) else self.__save_button.setEnabled(False)
+        self.__save_button.setEnabled(True) if not (
+            id.isspace() or id.__eq__(str())
+        ) else self.__save_button.setEnabled(False)
 
     def on_save_button_clicked(self, checked: bool) -> None:
         strategy: Union[Strategy, None] = StrategyRepository.query_by_id(self.id)
         if not strategy:
-            return 
-        
+            return
+
         strategy.id = self.id
         strategy.description = self.description
         strategy.type = self.type
@@ -161,7 +173,7 @@ class EditStrategyDialog(QDialog):
         strategy.starting_capital = self.starting_capital
 
         result: bool = StrategyRepository.update(strategy)
-        
+
         if not result:
             QMessageBox.warning(self, "WARN", "Error.")
             return
@@ -169,7 +181,7 @@ class EditStrategyDialog(QDialog):
         QMessageBox.information(self, "INFO", "Strategy updated.")
         self.close()
         self.strategy_updated.emit()
-        return 
+        return
 
     def on_close_button_clicked(self, checked: bool) -> None:
         self.close()

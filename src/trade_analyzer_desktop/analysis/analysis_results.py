@@ -1,13 +1,19 @@
 from typing import Dict, List, Union
-from datetime import date as Date 
+from datetime import date as Date
 
 from ..entities import Trade
 from .benchmark_symbol import BenchmarkSymbol
 from .statistics_results import StatisticsResults
 
-class AnalysisResults:
 
-    def __init__(self, starting_capital: float, start_date: Date, end_date: Date, benchmark_symbol: BenchmarkSymbol) -> None:
+class AnalysisResults:
+    def __init__(
+        self,
+        starting_capital: float,
+        start_date: Date,
+        end_date: Date,
+        benchmark_symbol: BenchmarkSymbol,
+    ) -> None:
         self.__starting_capital: float = starting_capital
         self.__start_date: Date = start_date
         self.__end_date: Date = end_date
@@ -26,7 +32,7 @@ class AnalysisResults:
     @property
     def end_date(self) -> Date:
         return self.__end_date
-    
+
     @property
     def benchmark_symbol(self) -> BenchmarkSymbol:
         return self.__benchmark_symbol
@@ -43,4 +49,3 @@ class AnalysisResults:
         return self.__results.get(key, None)
 
     # -------------------------------------------------- Private Methods --------------------------------------------------
-    

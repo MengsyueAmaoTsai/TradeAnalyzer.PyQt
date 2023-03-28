@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class InstrumentType(Enum):
     Unknown = "Unknown"
     Equity = "Equity"
@@ -16,4 +17,3 @@ class InstrumentType(Enum):
     Warrant = "Warrant"
     ETF = "ETF"
     MutualFund = "MutualFund"
-

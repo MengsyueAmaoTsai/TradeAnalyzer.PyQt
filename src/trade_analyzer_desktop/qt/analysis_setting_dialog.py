@@ -1,21 +1,31 @@
 from typing import Optional
 from datetime import date as Date
 
-from PyQt6.QtWidgets import QWidget, QDialog, QLabel, QComboBox, QDoubleSpinBox, QPushButton, QDateEdit, QGridLayout
+from PyQt6.QtWidgets import (
+    QWidget,
+    QDialog,
+    QLabel,
+    QComboBox,
+    QDoubleSpinBox,
+    QPushButton,
+    QDateEdit,
+    QGridLayout,
+)
 from PyQt6.QtCore import pyqtSignal
 
 from ..analysis import BenchmarkSymbol
 
 
 class AnalysisSettingsDialog(QDialog):
-
     DATE_FORMAT: str = "yyyy-MM-dd"
 
-    analysis_settings_confirmed: pyqtSignal = pyqtSignal(float, Date, Date, BenchmarkSymbol)
+    analysis_settings_confirmed: pyqtSignal = pyqtSignal(
+        float, Date, Date, BenchmarkSymbol
+    )
 
     def __init__(self, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
-        
+
         # Widgets
         self.__starting_capital_input: QDoubleSpinBox = QDoubleSpinBox()
         self.__starting_capital_input.setMaximum(999999999)
@@ -43,20 +53,20 @@ class AnalysisSettingsDialog(QDialog):
 
         layout.addWidget(QLabel("Start Date"), 1, 0, 1, 1)
         layout.addWidget(self.__start_date_input, 1, 1, 1, 3)
-        
+
         layout.addWidget(QLabel("End Date"), 2, 0, 1, 1)
         layout.addWidget(self.__end_date_input, 2, 1, 1, 3)
 
         layout.addWidget(QLabel("Benchmark"), 3, 0, 1, 1)
         layout.addWidget(self.__benchmark_combo, 3, 1, 1, 3)
-        
+
         layout.addWidget(self.__confirm_button, 4, 0, 1, 2)
         layout.addWidget(self.__cancel_button, 4, 2, 1, 2)
         # Data
         for i, symbol in enumerate(BenchmarkSymbol):
             self.__benchmark_combo.addItem(symbol.value, symbol)
 
-    # -------------------------------------------------- Properties -------------------------------------------------- 
+    # -------------------------------------------------- Properties --------------------------------------------------
     @property
     def starting_capital(self) -> float:
         return self.__starting_capital_input.value()
@@ -76,7 +86,7 @@ class AnalysisSettingsDialog(QDialog):
     @property
     def end_date(self) -> Date:
         return self.__end_date_input.date().toPyDate()
-    
+
     @end_date.setter
     def end_date(self, date: Date) -> None:
         self.__end_date_input.setDate(date)
@@ -85,14 +95,16 @@ class AnalysisSettingsDialog(QDialog):
     def benchmark_symbol(self) -> BenchmarkSymbol:
         return self.__benchmark_combo.currentData()
 
-    # -------------------------------------------------- Event Handlers -------------------------------------------------- 
+    # -------------------------------------------------- Event Handlers --------------------------------------------------
     def on_confirm_button_clicked(self, checked: bool) -> None:
         self.close()
-        self.analysis_settings_confirmed.emit(self.starting_capital, self.start_date, self.end_date, self.benchmark_symbol)
+        self.analysis_settings_confirmed.emit(
+            self.starting_capital, self.start_date, self.end_date, self.benchmark_symbol
+        )
 
     def on_cancel_button_clicked(self, checked: bool) -> None:
         self.close()
 
-    # -------------------------------------------------- Public Methods -------------------------------------------------- 
-    
-    # -------------------------------------------------- Private Methods -------------------------------------------------- 
+    # -------------------------------------------------- Public Methods --------------------------------------------------
+
+    # -------------------------------------------------- Private Methods --------------------------------------------------

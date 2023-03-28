@@ -1,11 +1,10 @@
-
 from datetime import datetime as DateTime
 
 from ..enums import Action, OrderStatus
 from ..entities import Order
 
-class OrderFilledEvent:
 
+class OrderFilledEvent:
     def __init__(self, order: Order) -> None:
         self.__order: Order = order
         self.__fee: float = 0
@@ -37,11 +36,11 @@ class OrderFilledEvent:
     @property
     def avg_filled_price(self) -> float:
         return self.__order.avg_filled_price
-    
+
     @property
     def fee(self) -> float:
         return self.__fee
-    
+
     @fee.setter
     def fee(self, fee: float) -> None:
         self.__fee = fee

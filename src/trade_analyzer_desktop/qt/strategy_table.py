@@ -1,7 +1,16 @@
 from typing import Optional, List, Union
 from datetime import date as Date
 
-from PyQt6.QtWidgets import QTableWidget, QTableWidgetItem, QWidget, QHeaderView, QMenu, QMessageBox, QFileDialog, QTableWidgetSelectionRange
+from PyQt6.QtWidgets import (
+    QTableWidget,
+    QTableWidgetItem,
+    QWidget,
+    QHeaderView,
+    QMenu,
+    QMessageBox,
+    QFileDialog,
+    QTableWidgetSelectionRange,
+)
 from PyQt6.QtCore import Qt, QPoint
 from PyQt6.QtGui import QAction
 from PyQt6.QtCore import pyqtSignal
@@ -16,9 +25,15 @@ from ..repositories import StrategyRepository, BacktestReportRepository, OrderRe
 
 
 class StrategyTable(QTableWidget):
-
     FIELDS: List[str] = [
-        "ID", "Description", "Type", "Resolution", "Side", "Trading Platform", "Starting Capital", "Default Backtest Report"
+        "ID",
+        "Description",
+        "Type",
+        "Resolution",
+        "Side",
+        "Trading Platform",
+        "Starting Capital",
+        "Default Backtest Report",
     ]
 
     strategy_deleted: pyqtSignal = pyqtSignal()
@@ -47,35 +62,38 @@ class StrategyTable(QTableWidget):
         selected_rows: set[int] = set(index.row() for index in self.selectedIndexes())
         for row in selected_rows:
             strategy_id: str = self.item(row, 0).text().strip()
-            strategy: Union[Strategy, None] = StrategyRepository.query_by_id(strategy_id)
+            strategy: Union[Strategy, None] = StrategyRepository.query_by_id(
+                strategy_id
+            )
             if strategy:
                 strategies.append(strategy)
-        return strategies        
+        return strategies
 
     # -------------------------------------------------- Event Handlers --------------------------------------------------
     def on_context_menu_requested(self, point: QPoint) -> None:
         if not self.selectedItems():
-            return 
-        
+            return
+
         menu: QMenu = QMenu(self)
-        
+
         edit_action: QAction = menu.addAction("Edit")
         edit_action.triggered.connect(self.on_edit_action_clicked)
 
         delete_action: QAction = menu.addAction("Delete")
         delete_action.triggered.connect(self.on_delete_action_clicked)
-        
+
         menu.addSeparator()
 
         upload_report_action: QAction = menu.addAction("Upload Backtest Report")
         upload_report_action.triggered.connect(self.on_upload_report_action_clicked)
-        
+
         create_portfolio_action: QAction = menu.addAction("Create Portfolio")
-        create_portfolio_action.triggered.connect(self.on_create_portfolio_action_clicked)
+        create_portfolio_action.triggered.connect(
+            self.on_create_portfolio_action_clicked
+        )
 
         analyze_action: QAction = menu.addAction("Analyze Strategy")
         analyze_action.triggered.connect(self.on_analyze_action_clicked)
-
 
         selected_rows: set[int] = set(index.row() for index in self.selectedIndexes())
 
@@ -86,11 +104,13 @@ class StrategyTable(QTableWidget):
             analyze_action.setText("Analyze Strategies")
         else:
             create_portfolio_action.setEnabled(False)
-            
-        menu.exec(self.mapToGlobal(point))        
+
+        menu.exec(self.mapToGlobal(point))
 
     def on_edit_action_clicked(self, checked: bool) -> None:
-        strategy: Union[Strategy, None] = StrategyRepository.query_by_id(self.current_strategy_id)
+        strategy: Union[Strategy, None] = StrategyRepository.query_by_id(
+            self.current_strategy_id
+        )
 
         if not strategy:
             return
@@ -106,48 +126,63 @@ class StrategyTable(QTableWidget):
         self.__strategy_form.exec()
 
     def on_delete_action_clicked(self, checked: bool) -> None:
-        strategy: Union[Strategy, None] = StrategyRepository.query_by_id(self.current_strategy_id)
+        strategy: Union[Strategy, None] = StrategyRepository.query_by_id(
+            self.current_strategy_id
+        )
 
         if not strategy:
-            return 
+            return
 
-        backtest_reports: List[BacktestReport] = BacktestReportRepository.query_by_strategy_id(strategy.id) 
+        backtest_reports: List[
+            BacktestReport
+        ] = BacktestReportRepository.query_by_strategy_id(strategy.id)
 
         reply: QMessageBox.StandardButton = QMessageBox.StandardButton.Yes
 
         if len(backtest_reports) != 0:
             reply = QMessageBox.question(
-                self, "QUESTION", 
-                f"There are still {len(backtest_reports)} reports in this strategy. Make sure to delete?", 
-                QMessageBox.StandardButton.Yes, QMessageBox.StandardButton.No
+                self,
+                "QUESTION",
+                f"There are still {len(backtest_reports)} reports in this strategy. Make sure to delete?",
+                QMessageBox.StandardButton.Yes,
+                QMessageBox.StandardButton.No,
             )
 
         if reply == QMessageBox.StandardButton.No:
-            return 
-        
+            return
+
         strategy_deleted: bool = StrategyRepository.delete(strategy)
-        
+
         if not strategy_deleted:
             QMessageBox.warning(self, "WARN", "Error")
             return
-        
+
         for report in backtest_reports:
             BacktestReportRepository.delete(report)
             OrderRepository.delete_by_strategy_id(f"{report.strategy_id}:{report.id}")
-        
+
         QMessageBox.information(self, "INFO", "Strategy deleted.")
         self.strategy_deleted.emit()
-        return 
+        return
 
     def on_upload_report_action_clicked(self, checked: bool) -> None:
-        path: str = QFileDialog.getOpenFileName(self, "Open File", "C:/RichillCapital/Output/Bots/Executions", "Text File(*.txt)")[0]
+        path: str = QFileDialog.getOpenFileName(
+            self,
+            "Open File",
+            "C:/RichillCapital/Output/Bots/Executions",
+            "Text File(*.txt)",
+        )[0]
 
         if path.isspace() or path.__eq__(str()):
-            return 
-        backtest_report_id: str = path.split('/')[-1].split('.')[0]
+            return
+        backtest_report_id: str = path.split("/")[-1].split(".")[0]
 
-        self.__upload_backtest_report_dialog: UploadBacktestReportDialog = UploadBacktestReportDialog(path) 
-        self.__upload_backtest_report_dialog.backtest_report_uploaded.connect(self.on_backtest_report_uploaded)
+        self.__upload_backtest_report_dialog: UploadBacktestReportDialog = (
+            UploadBacktestReportDialog(path)
+        )
+        self.__upload_backtest_report_dialog.backtest_report_uploaded.connect(
+            self.on_backtest_report_uploaded
+        )
         self.__upload_backtest_report_dialog.strategy_id = self.current_strategy_id
         self.__upload_backtest_report_dialog.backtest_report_id = backtest_report_id
         self.__upload_backtest_report_dialog.exec()
@@ -158,7 +193,9 @@ class StrategyTable(QTableWidget):
 
         for row in selected_rows:
             strategy_id: str = self.item(row, 0).text().strip()
-            strategy: Union[Strategy, None] = StrategyRepository.query_by_id(strategy_id)
+            strategy: Union[Strategy, None] = StrategyRepository.query_by_id(
+                strategy_id
+            )
             if strategy:
                 strategies.append(strategy)
 
@@ -168,23 +205,45 @@ class StrategyTable(QTableWidget):
         reports: List[BacktestReport] = []
         for strategy in self.selected_strategies:
             if not strategy.default_report_id:
-                QMessageBox.warning(self, "WARN", f"Default report must be set before analyzing the strategy. {strategy.id}")
-                return 
-            report: Union[BacktestReport, None] = BacktestReportRepository.query_by_id(strategy.default_report_id)
-            assert(report is not None)
+                QMessageBox.warning(
+                    self,
+                    "WARN",
+                    f"Default report must be set before analyzing the strategy. {strategy.id}",
+                )
+                return
+            report: Union[BacktestReport, None] = BacktestReportRepository.query_by_id(
+                strategy.default_report_id
+            )
+            assert report is not None
             reports.append(report)
 
         self.__setting_dialog: AnalysisSettingsDialog = AnalysisSettingsDialog()
-        self.__setting_dialog.analysis_settings_confirmed.connect(self.on_analysis_setting_confirmed)
-        self.__setting_dialog.starting_capital = max(strategy.starting_capital for strategy in self.selected_strategies)
+        self.__setting_dialog.analysis_settings_confirmed.connect(
+            self.on_analysis_setting_confirmed
+        )
+        self.__setting_dialog.starting_capital = max(
+            strategy.starting_capital for strategy in self.selected_strategies
+        )
         self.__setting_dialog.start_date = max(report.start_date for report in reports)
         self.__setting_dialog.end_date = min(report.end_date for report in reports)
         self.__setting_dialog.exec()
 
-    def on_analysis_setting_confirmed(self, starting_capital: float, start_date: Date, end_date: Date, benchmark_sybol: BenchmarkSymbol) -> None:
-        results: AnalysisResults = Analyzer.analyze_strategies(self.selected_strategies, starting_capital, start_date, end_date, benchmark_sybol)
+    def on_analysis_setting_confirmed(
+        self,
+        starting_capital: float,
+        start_date: Date,
+        end_date: Date,
+        benchmark_sybol: BenchmarkSymbol,
+    ) -> None:
+        results: AnalysisResults = Analyzer.analyze_strategies(
+            self.selected_strategies,
+            starting_capital,
+            start_date,
+            end_date,
+            benchmark_sybol,
+        )
         self.__analysis_window: AnalysisWindow = AnalysisWindow(results)
-        self.__analysis_window.showMaximized()        
+        self.__analysis_window.showMaximized()
 
     def on_strategy_updated(self) -> None:
         strategies: List[Strategy] = StrategyRepository.query_all()
@@ -192,7 +251,7 @@ class StrategyTable(QTableWidget):
 
     def on_strategy_deleted(self) -> None:
         strategies: List[Strategy] = StrategyRepository.query_all()
-        self.set_strategies(strategies)        
+        self.set_strategies(strategies)
 
     def on_backtest_report_uploaded(self) -> None:
         self.backtest_report_uploaded.emit()
@@ -205,7 +264,7 @@ class StrategyTable(QTableWidget):
         for strategy in strategies:
             row: int = self.rowCount()
             self.setRowCount(row + 1)
-            
+
             self.setItem(row, 0, QTableWidgetItem(strategy.id))
             self.setItem(row, 1, QTableWidgetItem(strategy.description))
             self.setItem(row, 2, QTableWidgetItem(strategy.type.value))
@@ -217,5 +276,5 @@ class StrategyTable(QTableWidget):
 
         if self.rowCount() != 0:
             self.selectRow(0)
+
     # -------------------------------------------------- Private Methods --------------------------------------------------
-    

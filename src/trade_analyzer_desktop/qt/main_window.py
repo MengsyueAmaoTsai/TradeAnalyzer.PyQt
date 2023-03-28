@@ -1,18 +1,23 @@
-
-
-from PyQt6.QtWidgets import QMainWindow, QWidget, QTabWidget, QGridLayout, QMenuBar, QMenu
+from PyQt6.QtWidgets import (
+    QMainWindow,
+    QWidget,
+    QTabWidget,
+    QGridLayout,
+    QMenuBar,
+    QMenu,
+)
 from PyQt6.QtGui import QAction
 
 from .strategy_window import StrategyWindow
 from .create_strategy_dialog import CreateStrategyDialog
 from .instrument_window import InstrumentWindow
 
-class MainWindow(QMainWindow):
 
+class MainWindow(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
         self.setWindowTitle("Trade Analyzer Desktop [Version 0.1.0]")
-        
+
         # Menu
         # Menu - File
         file_menu: QMenu = self.menuBar().addMenu("File")
@@ -34,17 +39,19 @@ class MainWindow(QMainWindow):
         self.__tab.addTab(QWidget(), "Portfolios")
         self.setCentralWidget(self.__tab)
 
-
     # -------------------------------------------------- Properties --------------------------------------------------
     # -------------------------------------------------- Event Handlers --------------------------------------------------
     def on_new_strategy_action_clicked(self, checked: bool) -> None:
         self.__strategy_form: CreateStrategyDialog = CreateStrategyDialog(self)
         self.__strategy_form.setWindowTitle("Create Strategy")
-        self.__strategy_form.strategy_created.connect(self.__strategy_window.on_strategy_created)
+        self.__strategy_form.strategy_created.connect(
+            self.__strategy_window.on_strategy_created
+        )
         self.__strategy_form.exec()
-    
+
     def on_instruments_action_clicked(self, checked: bool) -> None:
         self.__instrument_window: InstrumentWindow = InstrumentWindow(self)
         self.__instrument_window.exec()
+
     # -------------------------------------------------- Public Methods --------------------------------------------------
     # -------------------------------------------------- Private Methods --------------------------------------------------

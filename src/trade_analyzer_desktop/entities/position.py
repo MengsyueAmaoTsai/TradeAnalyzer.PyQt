@@ -3,8 +3,8 @@ from typing import List
 from ..enums import Side, Action, PositionStatus
 from ..events import OrderFilledEvent
 
-class Position:
 
+class Position:
     def __init__(self, id: int, symbol: str, side: Side, strategy_id: str) -> None:
         self.__id: int = id
         self.__symbol: str = symbol
@@ -32,7 +32,7 @@ class Position:
     @stauts.setter
     def status(self, status: PositionStatus) -> None:
         self.__status = status
-        
+
     @property
     def strategy_id(self) -> str:
         return self.__strategy_id
@@ -46,7 +46,7 @@ class Position:
         if self.side == Side.Long:
             return self.total_buy_size
         else:
-            return self.total_sell_size 
+            return self.total_sell_size
 
     @property
     def total_exit_size(self) -> float:
@@ -69,8 +69,8 @@ class Position:
 
     @property
     def sell_fills(self) -> List[OrderFilledEvent]:
-        return list(filter(lambda fill: fill.action == Action.Sell, self.__fills)) 
+        return list(filter(lambda fill: fill.action == Action.Sell, self.__fills))
 
-    # 
+    #
     def add_fill(self, e: OrderFilledEvent) -> None:
         self.__fills.append(e)

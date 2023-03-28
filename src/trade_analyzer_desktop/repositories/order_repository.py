@@ -1,4 +1,3 @@
-
 from typing import List
 
 from PyQt6.QtSql import QSqlQuery
@@ -6,8 +5,7 @@ from PyQt6.QtSql import QSqlQuery
 from ..entities import Order
 
 
-class OrderRepository():
-
+class OrderRepository:
     INSERT_ORDERS_SQL: str = """
     INSERT INTO orders (datetime, symbol, type, action, quantity, price, strategy_id)
     VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -22,13 +20,15 @@ class OrderRepository():
     SELECT_BY_STRATEGY_ID_SQL: str = """
     SELECT * FROM orders WHERE strategy_id = :strategy_id
     """
-    
+
     @classmethod
     def insert_batch(cls, orders: List[Order]) -> bool:
         query: QSqlQuery = QSqlQuery()
         query.prepare(cls.INSERT_ORDERS_SQL)
 
-        query.addBindValue([order.datetime.strftime("%Y-%m-%d %H:%M:%S") for order in orders])
+        query.addBindValue(
+            [order.datetime.strftime("%Y-%m-%d %H:%M:%S") for order in orders]
+        )
         query.addBindValue([order.symbol for order in orders])
         query.addBindValue([order.type.value for order in orders])
         query.addBindValue([order.action.value for order in orders])
@@ -46,7 +46,7 @@ class OrderRepository():
         query: QSqlQuery = QSqlQuery()
         query.prepare(cls.DELETE_SQL)
         query.bindValue(":strategy_id", strategy_id)
-        return query.exec()        
+        return query.exec()
 
     @classmethod
     def query_by_strategy_id(cls, strategy_id: str) -> List[Order]:
@@ -57,6 +57,6 @@ class OrderRepository():
         query.bindValue(":strategy_id", strategy_id)
         query.exec()
 
-        while (query.next()):
+        while query.next():
             orders.append(Order.from_query(query))
         return orders

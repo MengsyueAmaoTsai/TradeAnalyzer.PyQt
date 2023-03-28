@@ -4,8 +4,14 @@ from PyQt6.QtSql import QSqlQuery
 
 
 class BacktestReport:
-
-    def __init__(self, id: str, description: str, start_date: Date, end_date: Date, strategy_id: str) -> None:
+    def __init__(
+        self,
+        id: str,
+        description: str,
+        start_date: Date,
+        end_date: Date,
+        strategy_id: str,
+    ) -> None:
         self.__id: str = id
         self.__description: str = description
         self.__start_date: Date = start_date
@@ -35,7 +41,7 @@ class BacktestReport:
 
     @start_date.setter
     def start_date(self, date: Date) -> None:
-        self.__start_date = date 
+        self.__start_date = date
 
     @property
     def end_date(self) -> Date:
@@ -43,7 +49,7 @@ class BacktestReport:
 
     @end_date.setter
     def end_date(self, date: Date) -> None:
-        self.__end_date = date 
+        self.__end_date = date
 
     @property
     def strategy_id(self) -> str:
@@ -51,7 +57,7 @@ class BacktestReport:
 
     @strategy_id.setter
     def strategy_id(self, strategy_id: str) -> None:
-        self.__strategy_id = strategy_id 
+        self.__strategy_id = strategy_id
 
     # -------------------------------------------------- Public Methods --------------------------------------------------
     @classmethod
@@ -61,5 +67,5 @@ class BacktestReport:
             query.value("description"),
             DateTime.strptime(query.value("start_date"), "%Y-%m-%d").date(),
             DateTime.strptime(query.value("end_date"), "%Y-%m-%d").date(),
-            query.value("strategy_id")
+            query.value("strategy_id"),
         )

@@ -4,12 +4,21 @@ from PyQt6.QtSql import QSqlQuery
 
 from ..enums import OrderType, Action, OrderStatus
 
-class Order:
 
-    def __init__(self, datetime: DateTime, symbol: str, type: OrderType, action: Action, quantity: float, price: float, strategy_id: str = "") -> None:
+class Order:
+    def __init__(
+        self,
+        datetime: DateTime,
+        symbol: str,
+        type: OrderType,
+        action: Action,
+        quantity: float,
+        price: float,
+        strategy_id: str = "",
+    ) -> None:
         self.__datetime: DateTime = datetime
         self.__symbol: str = symbol
-        self.__type: OrderType = type 
+        self.__type: OrderType = type
         self.__action: Action = action
         self.__quantity: float = quantity
         self.__price: float = price
@@ -56,7 +65,7 @@ class Order:
     @property
     def remaining_quantity(self) -> float:
         return self.__remaining_quantity
-    
+
     @remaining_quantity.setter
     def remaining_quantity(self, remaining_quantity: float) -> None:
         self.__remaining_quantity = remaining_quantity
@@ -64,10 +73,10 @@ class Order:
     @property
     def filled_quantity(self) -> float:
         return self.__filled_quantity
-    
+
     @filled_quantity.setter
     def filled_quantity(self, filled_quantity: float) -> None:
-        self.__filled_quantity = filled_quantity     
+        self.__filled_quantity = filled_quantity
 
     @property
     def avg_filled_price(self) -> float:
@@ -75,7 +84,7 @@ class Order:
 
     @avg_filled_price.setter
     def avg_filled_price(self, price: float) -> None:
-        self.__avg_filled_price = price 
+        self.__avg_filled_price = price
 
     @property
     def status(self) -> OrderStatus:
@@ -83,7 +92,7 @@ class Order:
 
     @status.setter
     def status(self, status: OrderStatus) -> None:
-        self.__status = status  
+        self.__status = status
 
     @property
     def is_day_trade(self) -> bool:
@@ -103,5 +112,5 @@ class Order:
             Action(query.value("action")),
             query.value("quantity"),
             query.value("price"),
-            query.value("strategy_id")
+            query.value("strategy_id"),
         )

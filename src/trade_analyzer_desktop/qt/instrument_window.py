@@ -8,15 +8,16 @@ from ..repositories import InstrumentRepository
 
 
 class InstrumentWindow(QDialog):
-
     def __init__(self, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
         self.setWindowTitle("Instruments")
         self.resize(600, 400)
 
-        # Widgets 
+        # Widgets
         self.__instrument_table: InstrumentTable = InstrumentTable()
-        self.__instrument_table.setEditTriggers(InstrumentTable.EditTrigger.NoEditTriggers)
+        self.__instrument_table.setEditTriggers(
+            InstrumentTable.EditTrigger.NoEditTriggers
+        )
 
         # Layout
         layout: QGridLayout = QGridLayout(self)

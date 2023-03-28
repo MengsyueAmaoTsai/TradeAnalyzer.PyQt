@@ -5,12 +5,11 @@ from PyQt6.QtSql import QSqlQuery
 from ..entities import BacktestReport
 
 
-class BacktestReportRepository():
-
+class BacktestReportRepository:
     SELECT_BY_STRATEGY_ID_SQL: str = """
     SELECT * FROM backtest_reports WHERE strategy_id = :strategy_id
     """
-    
+
     SELECT_BY_ID_SQL: str = """
     SELECT * FROM backtest_reports WHERE id = :report_id
     """
@@ -31,7 +30,7 @@ class BacktestReportRepository():
     AND 
     strategy_id = :strategy_id
     """
-    
+
     DELETE_SQL: str = """
     DELETE FROM backtest_reports 
     WHERE 
@@ -44,7 +43,7 @@ class BacktestReportRepository():
     def insert(cls, backtest_report: BacktestReport) -> bool:
         query: QSqlQuery = QSqlQuery()
         query.prepare(cls.INSERT_BACKTEST_REPORT_SQL)
-        
+
         query.addBindValue(backtest_report.id)
         query.addBindValue(backtest_report.description)
         query.addBindValue(backtest_report.start_date.strftime("%Y-%m-%d"))
@@ -72,7 +71,7 @@ class BacktestReportRepository():
         query.bindValue(":report_id", id)
         query.exec()
 
-        if (query.next()):
+        if query.next():
             report = BacktestReport.from_query(query)
         return report
 
@@ -85,7 +84,7 @@ class BacktestReportRepository():
         query.bindValue(":strategy_id", strategy_id)
         query.exec()
 
-        while (query.next()):
+        while query.next():
             reports.append(BacktestReport.from_query(query))
         return reports
 
@@ -95,4 +94,4 @@ class BacktestReportRepository():
         query.prepare(cls.DELETE_SQL)
         query.bindValue(":backtest_report_id", backtest_report.id)
         query.bindValue(":strategy_id", backtest_report.strategy_id)
-        return query.exec()                
+        return query.exec()

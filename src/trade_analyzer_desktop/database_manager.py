@@ -1,12 +1,11 @@
-
-import os 
+import os
 from typing import Optional
 
 from PyQt6.QtSql import QSqlDatabase, QSqlQuery
 
-class DatabaseManager:
 
-    DATABASE_NAME: str = 'dev.db'
+class DatabaseManager:
+    DATABASE_NAME: str = "dev.db"
 
     __sqlite: Optional[QSqlDatabase] = None
 
@@ -60,9 +59,9 @@ class DatabaseManager:
     @classmethod
     def connect(cls) -> None:
         if cls.__sqlite:
-            return 
+            return
 
-        cls.__sqlite = QSqlDatabase.addDatabase('QSQLITE')
+        cls.__sqlite = QSqlDatabase.addDatabase("QSQLITE")
         cls.__sqlite.setDatabaseName(cls.DATABASE_NAME)
         cls.__sqlite.open()
         print(f"Sqlite database is connected.")
@@ -71,11 +70,11 @@ class DatabaseManager:
     def reset_database(cls) -> None:
         if os.path.exists(cls.DATABASE_NAME):
             os.remove(cls.DATABASE_NAME)
-        
-        connection: QSqlDatabase = QSqlDatabase.addDatabase('QSQLITE')
+
+        connection: QSqlDatabase = QSqlDatabase.addDatabase("QSQLITE")
         connection.setDatabaseName(cls.DATABASE_NAME)
         connection.open()
-        
+
         query: QSqlQuery = QSqlQuery()
         if query.exec(cls.CREATE_STRATEGIES_TABLE_SQL):
             print("Created table strategies.")
@@ -84,12 +83,9 @@ class DatabaseManager:
             print("Created table backtest_reports.")
 
         if query.exec(cls.CREATE_ORDERS_TABLE_SQL):
-            print("Created table orders.") 
+            print("Created table orders.")
 
         if query.exec(cls.CREATE_INSTRUMENTS_TABLE_SQL):
-            print("Created table instruments.")                           
+            print("Created table instruments.")
         connection.close()
-        return 
-
-        
-        
+        return
