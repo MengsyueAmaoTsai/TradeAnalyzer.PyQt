@@ -169,7 +169,7 @@ class StrategyTable(QTableWidget):
         path: str = QFileDialog.getOpenFileName(
             self,
             "Open File",
-            "C:/RichillCapital/Output/Bots/Executions",
+            "C:/RichillCapital/Output/Bots/Executions/History",
             "Text File(*.txt)",
         )[0]
 
