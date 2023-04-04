@@ -1,4 +1,3 @@
-import qdarkstyle
 from PyQt6.QtWidgets import QApplication
 
 from .qt.main_window import MainWindow
@@ -8,7 +7,6 @@ from .database_manager import DatabaseManager
 class TradeAnalyzerClientDesktop(QApplication):
     def __init__(self) -> None:
         super().__init__([])
-        self.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
         # DatabaseManager.reset_database()
         DatabaseManager.connect()
 
