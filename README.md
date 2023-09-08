@@ -1,4 +1,4 @@
-# trade-analyzer-desktop-qt-py
+# TradeAnalyzer PyQt
 
 
 ## Development
