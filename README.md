@@ -2,7 +2,7 @@
 
 
 ## Development
-```
+```bash
 # Install PDM @Windows
 (Invoke-WebRequest -Uri https://raw.githubusercontent.com/pdm-project/pdm/main/install-pdm.py -UseBasicParsing).Content | python -
 
@@ -18,7 +18,7 @@ pdm venv activate in-project
 ```
 
 ## Run App
-```
+```bash
 # Run app
 pdm run start
 ```
