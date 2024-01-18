@@ -1,24 +1,38 @@
 # TradeAnalyzer PyQt
 
+## Description
+
+This desktop application use to analyzing text file which output from XQ trading platform.
+
+- Supports multi-report analysis.
+- Supports compare with benchmark performance.
+
+**This project is no longer maintained and may contain some bugs.**
 
 ## Development
-```bash
-# Install PDM @Windows
+
+### Install PDM Package Manager
+
+```powershell
+# Windows
 (Invoke-WebRequest -Uri https://raw.githubusercontent.com/pdm-project/pdm/main/install-pdm.py -UseBasicParsing).Content | python -
 
-# Install PDM @Linux
+# Ubuntu
 curl -sSL https://raw.githubusercontent.com/pdm-project/pdm/main/install-pdm.py | python3 -
+```
 
-# Install dependencies
+### Install Project Dependencies
+
+```powershell
 pdm install
-
-# Activate venv
-pdm venv activate in-project
-
 ```
 
 ## Run App
-```bash
-# Run app
+
+```powershell
 pdm run start
 ```
+
+## License
+
+This project is licensed under the [GNU General Public License (GPL) version 3.0 or later](LICENSE), see the [LICENSE](LICENSE) file for details.
